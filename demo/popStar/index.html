@@ -109,11 +109,13 @@
 						return this()[y]()[x].selected();
 					},
 					leftNum: function() {
-						var total = 0;
 						$.each(this(), function(index, value) {
-							total += value().length;
+							$.each(value(), function(index, value) {
+								if(value.value < 4) {
+									total++;
+								}
+							});
 						});
-						return total;
 					},
 					print: function() {
 						$.each(self.rows(), function(index, val) {
