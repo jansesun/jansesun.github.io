@@ -4,8 +4,8 @@
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>PopStar</title>
-		<script type="text/javascript" src="../../js/lib/knockout.js"></script>
-		<script type="text/javascript" src="../../js/lib/jquery.js"></script>
+		<script type="text/javascript" src="js/lib/knockout.js"></script>
+		<script type="text/javascript" src="js/lib/jquery.js"></script>
 		<style>
 			.block {
 				display: block;
@@ -110,12 +110,14 @@
 					},
 					leftNum: function() {
 						var total = 0;
+
 						$.each(this(), function(index, value) {
 							$.each(value(), function(index, value) {
 								if(value.value < 4) {
 									total++;
 								}
 							});
+							
 						});
 						return total;
 					},
@@ -149,6 +151,7 @@
 					var leftNum = self.rows.leftNum();
 					score = self.score();
 					var bonus = 2000 - leftNum * leftNum * 20;
+					console.log(score+ "+"+bonus);
 					self.score(score + (bonus < 0 ? 0 : bonus));
 					alert('Game Over');
 				}
