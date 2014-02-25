@@ -6,29 +6,55 @@
 		<meta http-equiv="X-UA-Compatible" content="IE-edge"/>
 		<meta name="description" content="blog,html,css,javascript,jquery,knockout">
 		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<style>
+			em.logo {
+				float: left;
+				background: url(images/valley-of-ghost.ico) no-repeat;
+				height: 48px;
+				width: 48px;
+			}
+			main {
+				padding-top: 60px;
+			}
+			.keywords {
+				font-size: 18px;
+			}
+			footer {
+				text-align: center;
+			}
+		</style>
 	</head>
 	<body>
-		<header>
-		</header>
-		<main class="content">
-			<section class="container">
+		<nav class="navbar navbar-inverse navbar-fixed-top" id="navbar">
+			<div class="navbar-inner">
+				<div class="container">
+					<em class="logo"></em>
+					<a class="navbar-brand" href="#" title="jansesun's blog--Valley of Ghosts">Valley of Ghosts</a>
+				</div>
+			</div>
+		</nav>
+		<main class="container">
+			<div class="jumbotron">
 				<h1>jansesun's blog--Valley of Ghosts</h1>
-				<div class="sub-title">About HTML, css, javascript, etc.</div>
-				<ul>
-					<li>
-						<h2><a href="/popStar">基于Knockout的popStar</a></h2>
-						<time>23 Feb, 2014</time>
-						<div class="keywords">
-							keyWords:
-							<span>knockout</span>
-							<span>jquery</span>
-						</div>
-					</li>
-				</ul>
-			</section>
+				<p>About HTML, css, javascript, etc</p>
+			</div>
+			<div class="page-header">
+				<h1>
+					<p><a href="/demo/popStar">基于Knockout的popStar</a></p>
+					<small>23 Feb, 2014</small>
+					<div class="keywords">
+						keyWords: 
+						<span class="label label-success">knockout</span>
+						<span class="label label-success">jquery</span>
+					</div>
+				</h1>
+			</div>
 		</main>
 		<footer>
 			Copyright©<a href="http://github.com/jansesun" target="_blank">jansesun</a>
 		</footer>
+		<script src="js/lib/jquery.js"></script>
+		<script src="js/lib/bootstrap.min.js"></script>
 	</body>
 </html>
