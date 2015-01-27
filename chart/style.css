@@ -1,0 +1,51 @@
+/* CSS Document */
+@media print{@page {size: portrait}}
+body, p, input, h1, h2, h3, h4, h5, h6, ul, li, dl, dt, dd, form { margin:0; padding:0; list-style:none; vertical-align:middle; }
+h1, h2, h3, h4, h5, h6, strong, em { font-weight:normal; font-style:normal; }
+img{
+	border:0;
+}
+body { 
+	font:normal 14px/1.5 "\5FAE\8F6F\96C5\9ED1", Helvetica; 
+	color:#000; 
+	background-color:white; 
+	-webkit-user-select: none; 
+	-webkit-text-size-adjust: none;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	background-color: #f0f0f0;
+}
+.container {
+	width: 950px;
+	margin: 20px auto 0;
+	position: relative;
+}
+.container>ul {
+	background-color: #fff;
+	font-size: 30px;
+}
+.container .item {
+	height: 70px;
+	background-color: #f4f4f5;
+	margin-bottom: 7px;
+	line-height: 70px;
+	padding-left: 24px;
+	position: relative;
+}
+.container .item:nth-child(even) {
+	background-color: inherit;
+}
+.container .item .icon {display: inline-block;
+	width: 120px;
+	height: 60px;
+	line-height: 60px;
+	text-align: center;
+	color: #fff;
+	position: absolute;
+	left: 300px;
+	top: 5px;
+}
+#chart {
+	position: absolute;
+	right: 0;
+	top: 0;
+}
