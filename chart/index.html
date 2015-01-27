@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Chart</title>
+	<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+	<section class="container">
+		<ul class="list"></ul>
+		<canvas id="chart" width="496" height="300"></canvas>
+	</section>
+	<script type="text/javascript">
+		(function() {
+			var chart, list, c = document.getElementById('chart'),
+				data = [
+					{title: 'PC, Cable', value: 1.17},
+					{title: 'PC, 3G', value: 3.21},
+					{title: 'Nexus 5, 3G', value: 5.00}
+				],
+				width = +c.getAttribute('width'),
+				height = 251,
+				i, x, len, step, start, str,
+				gradient, colors = ['#009345', '#8bc53f', '#ffdd15', '#faaf40', '#f05a28'];
+			// 渲染dom数据
+			str = [];
+			for(i = 0, len = data.length; i < len; ++i) {
+				if(!data[i].color) {
+					data[i].color = colors[~~data[i].value] || '#f00';
+				}
+				str.push([
+					'<li class="item">',
+						'<span class="title">{{title}}</span>',
+						'<div class="icon" style="background:{{color}}">{{value}}</div>',
+					'</li>'
+				].join('').replace(/\{\{(.+?)\}\}/g, function(str, key) {
+					// 对于整数取两位小数展示
+					return key === 'value' ? data[i][key].toFixed(2) : (data[i][key] || '');
+				}));
+			}
+			list = document.querySelector('.list');
+			list.innerHTML = str.join('');
+			console.time('chart');
+			// 渲染图表
+			chart = c.getContext('2d');
+			// 渲染纵向网格
+			chart.beginPath();
+			// 绘制多条同色线段时，循环画线，最后一次绘制，提高性能
+			for(i = 0; i < 7; ++i) {
+				x = i * 99;
+				chart.moveTo(x, 0);
+				chart.lineTo(x, height);
+			}
+			chart.strokeStyle = '#d9dadb';
+			chart.stroke();
+			chart.closePath();
+			// 渲染横坐标色卡
+			chart.beginPath();
+			// 绘制粗线时，纵坐标向上偏移50%
+			chart.moveTo(0, height - 5);
+			chart.lineTo(width, height - 5);
+			// 生成渐变色
+			gradient = chart.createLinearGradient(0, 0, width, 0);
+			for(i = 0, len = colors.length, step = 1 / len; i < len; ++i) {
+				gradient.addColorStop(i * step, colors[i]);
+				gradient.addColorStop((i + 1) * step, colors[i]);
+			}
+			chart.strokeStyle = gradient;
+			chart.lineWidth = 10;
+			chart.stroke();
+			chart.closePath();
+			// 渲染横坐标
+			chart.beginPath();
+			chart.fillStyle = '#555354';
+			chart.fontSize = "20px";
+			for(i = 0; i < 6; ++i) {
+				chart.fillText(String(i), Math.min(i * 99, width - 6), 280);
+			}
+			chart.closePath();
+			// 渲染横向柱状图
+			chart.fillStyle = '#231f20';
+			for(i = 0, start = 8, step = 75; i < 3; ++i) {
+				y = start + i * step;
+				chart.fillRect(0, y, data[i].value * 99, 50);
+			}
+			console.timeEnd('chart');
+		}());
+	</script>
+</body>
+</html>
