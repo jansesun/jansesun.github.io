@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8">
+		<title>动画demo</title>
+		<link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+		<link href="../css/railscasts.css" rel="stylesheet" type="text/css"/>
+		<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+		<link rel="shortcut icon" href="../ico/favicon.ico">
+		<script type="text/javascript">
+			var basePath = '../';
+			(function(){MX=window.MX||{};var g=function(a,c){for(var b in c)a.setAttribute(b,c[b])};MX.load=function(a){var c=a.js,b=c?".js":".css",d=-1==location.search.indexOf("jsDebug"),e=a.js||a.css;-1==e.indexOf("http://")?(e=(a.path||window.basePath)+((c?"js/":"css/")+e)+(!d&&!c?".source":""),b=e+(a.version?"_"+a.version:"")+b):b=e;d||(d=b.split("#"),b=d[0],b=b+(-1!=b.indexOf("?")?"&":"?")+"r="+Math.random(),d[1]&&(b=b+"#"+d[1]));if(c){var c=b,h=a.success,f=document.createElement("script");f.onload=function(){h&&h();f=null};g(f,{type:"text/javascript",src:c,async:"true"});document.getElementsByTagName("head")[0].appendChild(f)}else{var c=b,i=a.success,a=document.createElement("link");g(a,{rel:"stylesheet"});document.getElementsByTagName("head")[0].appendChild(a);g(a,{href:c});i&&(a.onload=function(){i()})}}})();
+		</script>
+		<style type="text/css">
+			.animation-container {
+				position: relative;
+				width: 115px;
+				height: 120px;
+				background-color: #3c6;
+				border-radius: 4px;
+			}
+			.rose {
+				position: absolute;
+				width: 15px;
+			}
+			.rose.active {
+				animation: moveX linear 1s infinite, moveY cubic-bezier(0, 0, .33, 0) 1s infinite;
+				will-change: left top;
+			}
+			@keyframes moveX {
+				from {
+					left: 0;
+				}
+				to {
+					left: 100px;
+				}
+			}
+			@keyframes moveY {
+				from {
+					top: 0;
+				}
+				to {
+					top: 100px;
+				}
+			}
+			.btn-container {
+				margin-top: 10px;
+				width: 115px;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container"><em class="logo"></em><a href="http://jansesun.github.io/" class="navbar-brand">Valley of Ghosts</a></div>
+			</div>
+		</nav>
+		<main class="container">
+			<header class="title">动画demo</header>
+			<div class="post-date">06 January 2016</div>
+			<section>
+				<p><a href="https://github.com/jansesun" target="_blank">jansesun</a>原创，转载请注明<a href="http://jansesun.github.io/animation/">出处</a></p>
+				<p>CSS3的animation属性为前端实现动画提供广阔的平台。不管是渐变动画还是逐帧动画都可以信手拈来。各种api的组合应用，可以打造炫酷的前端动画。</p>
+				<p>CSS3的animation属性允许同时设置多个关键帧动画，结合贝塞尔曲线时间函数的灵活应用即可随心所欲的实现DOM元素按任意平面曲线运动。</p>
+				<p>接下来我会给出一个DOM按照平抛运动轨迹运行的demo</p>
+				<p>在实现demo前，我们先从数学原理分析</p>
+				<p>平抛运动轨迹的参数方程为x = t, y = t^2，而x = t的贝塞尔曲线为linear, y=t^2的贝塞尔曲线为cubic-bezier(0, 0, .33, 0)</p>
+				<p>有了参数方程对应的贝塞尔曲线，剩下的就是前端工程师擅长的css定义了。</p>
+<pre><code>.rose.active {
+	animation: moveX linear 1s infinite, moveY cubic-bezier(0, 0, .33, 0) 1s infinite;
+	will-change: top left;
+}
+@keyframes moveX {
+	from {
+		left: 0;
+	}
+	to {
+		left: 100px;
+	}
+}
+@keyframes moveY {
+	from {
+		top: 0;
+	}
+	to {
+		top: 100px;
+	}
+}</code></pre>
+				<div id="demo-container">
+					<div class="animation-container"><img src="http://mat1.gtimg.com/www/newsapp/img/roselive/rose.png" class="rose"></div>
+					<div class="btn-container">
+						<button class="btn btn-primary btn-xs btn-animation">触发动画</button>
+					</div>
+				</div>
+			</section>
+		</main>
+		<script type="text/javascript">
+			MX.load({
+				js: 'lib/require',
+				version: '160106',
+				success: function() {
+					requirejs(['jquery', 'hljs'], function($, hljs) {
+						var demoContainer = $('#demo-container');
+						// 语法高亮
+						hljs.configure({
+							tabReplace: '    '
+						});
+						$('pre code').each(function() {
+							hljs.highlightBlock(this);
+						});
+						// 动画演示
+						demoContainer.on('click', '.btn-animation', function(e) {
+							var el = $(this);
+							if(el.data('stop')) {
+								el.text('触发动画');
+								el.data('stop', 0);
+							} else {
+								el.text('暂停动画');
+								el.data('stop', 1);
+							}
+							demoContainer.find('.rose').toggleClass('active');
+						});
+					});
+				}
+			});
+		</script>
+	</body>
+</html>

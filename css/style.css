@@ -1,0 +1,24 @@
+em.logo {
+	float: left;
+	background: url(../images/valley-of-ghost.ico) no-repeat;
+	height: 48px;
+	width: 48px;
+}
+main {
+	padding-top: 60px;
+}
+.title {
+	font-size: 28px;
+	color: #333;
+}
+.post-date {
+	color: #999;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #ccc;
+}
+section>p:first-child {
+	margin-top: 10px;
+}
+p {
+	margin-bottom: 10px;
+}
