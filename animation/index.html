@@ -25,7 +25,7 @@
 			}
 			.rose.active {
 				animation: moveX linear 1s infinite, moveY cubic-bezier(0, 0, .33, 0) 1s infinite;
-				will-change: left top;
+				will-change: left, top;
 			}
 			@keyframes moveX {
 				from {
@@ -58,7 +58,7 @@
 		</nav>
 		<main class="container">
 			<header class="title">动画demo</header>
-			<div class="post-date">06 January 2016</div>
+			<div class="post-date">05 January 2016</div>
 			<section>
 				<p><a href="https://github.com/jansesun" target="_blank">jansesun</a>原创，转载请注明<a href="http://jansesun.github.io/animation/">出处</a></p>
 				<p>CSS3的animation属性为前端实现动画提供广阔的平台。不管是渐变动画还是逐帧动画都可以信手拈来。各种api的组合应用，可以打造炫酷的前端动画。</p>
@@ -69,7 +69,7 @@
 				<p>有了参数方程对应的贝塞尔曲线，剩下的就是前端工程师擅长的css定义了。</p>
 <pre><code>.rose.active {
 	animation: moveX linear 1s infinite, moveY cubic-bezier(0, 0, .33, 0) 1s infinite;
-	will-change: top left;
+	will-change: top, left;
 }
 @keyframes moveX {
 	from {

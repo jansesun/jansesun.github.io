@@ -26,7 +26,7 @@ html(lang="zh-CN")
 			}
 			.rose.active {
 				animation: moveX linear 1s infinite, moveY cubic-bezier(0, 0, .33, 0) 1s infinite;
-				will-change: left top;
+				will-change: left, top;
 			}
 			@keyframes moveX {
 				from {
@@ -73,7 +73,7 @@ html(lang="zh-CN")
 					code.
 						.rose.active {
 							animation: moveX linear 1s infinite, moveY cubic-bezier(0, 0, .33, 0) 1s infinite;
-							will-change: top left;
+							will-change: top, left;
 						}
 						@keyframes moveX {
 							from {
