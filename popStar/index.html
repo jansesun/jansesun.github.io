@@ -138,6 +138,9 @@
 						}
 						var x = keys[0], y = keys[1];
 						var value = self.rows.valueOf(keys);
+						if(value === 4) {
+							return;
+						}
 						// 缓存当前色块
 						if(self.cache.value == -1 ||  utils.isUndefined(self.cache[x + '_' + y]) && value == self.cache.value) {
 							self.cache.count++;
