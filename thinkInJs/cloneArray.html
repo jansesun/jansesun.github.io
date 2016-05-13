@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <title>一维数组深复制</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/railscasts.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/style.css" rel="stylesheet" type="text/css"/>
+    <link rel="shortcut icon" href="../ico/favicon.ico">
+    <script type="text/javascript">
+      var basePath = '../';
+      (function(){MX=window.MX||{};var g=function(a,c){for(var b in c)a.setAttribute(b,c[b])};MX.load=function(a){var c=a.js,b=c?".js":".css",d=-1==location.search.indexOf("jsDebug"),e=a.js||a.css;-1==e.indexOf("http://")?(e=(a.path||window.basePath)+((c?"js/":"css/")+e)+(!d&&!c?".source":""),b=e+(a.version?"_"+a.version:"")+b):b=e;d||(d=b.split("#"),b=d[0],b=b+(-1!=b.indexOf("?")?"&":"?")+"r="+Math.random(),d[1]&&(b=b+"#"+d[1]));if(c){var c=b,h=a.success,f=document.createElement("script");f.onload=function(){h&&h();f=null};g(f,{type:"text/javascript",src:c,async:"true"});document.getElementsByTagName("head")[0].appendChild(f)}else{var c=b,i=a.success,a=document.createElement("link");g(a,{rel:"stylesheet"});document.getElementsByTagName("head")[0].appendChild(a);g(a,{href:c});i&&(a.onload=function(){i()})}}})();
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container"><em class="logo"></em><a href="http://jansesun.github.io/" class="navbar-brand">Valley of Ghosts</a></div>
+      </div>
+    </nav>
+    <main class="container">
+      <header class="title">思考题 一维数组深复制</header>
+      <div class="post-date">13 May 2016</div>
+      <section>
+        <p><a href="https://github.com/jansesun" target="_blank">jansesun</a>原创，转载请注明<a href="http://jansesun.github.io/thinkInJs/cloneArray.html">出处</a></p>
+        <p>之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。</p>
+        <p>今天群里的小伙伴无意间提起这件一直被我搁置的事情，今天决定将其付诸实践。</p>
+        <p>一维数组的深复制是一个平时项目实践中都可能会用到的，但是如果用尽可能多的方式实现这一操作呢？有多少种呢？</p>
+        <p>这里会列举一些比较精简的方式，如果读者收到一些启示，那我将不甚荣幸。</p>
+        <p>方案一 利用数组的slice操作</p>
+        <pre><code>var cloneArray = function(arr) {
+	return arr.slice(0);
+};</code></pre>
+        <p>方案二 利用数组的concat操作</p>
+        <pre><code>var cloneArray = function(arr) {
+	return [].concat(arr);
+};</code></pre>
+        <p>方案三 利用数组的splice操作</p>
+        <pre><code>var cloneArray = function(arr) {
+	return arr.splice(0, arr.length);
+};</code></pre>
+        <p>方案四 利用JSON的解析互逆操作</p>
+        <pre><code>var cloneArray = function(arr) {
+	return JSON.parse(JSON.stringify(arr));
+};</code></pre>
+        <p>方案五 利用数组的filter操作</p>
+        <pre><code>var cloneArray = function(arr) {
+	return arr.filter(function(val) {
+		return true;
+	});
+};</code></pre>
+        <p>方案六 利用数组的map操作</p>
+        <pre><code>var cloneArray = function(arr) {
+	return arr.map(function(val) {
+		return val;
+	});
+};</code></pre>
+        <p>方案七 利用EcmaScript6的数组可变参数的构造函数</p>
+        <pre><code>var cloneArray = function(arr) {
+	return arr.length === 1 ? [arr[0]] : Array(...arr);
+};</code></pre>
+        <p>方案八 利用解构数组</p>
+        <pre><code>var cloneArray = function(arr) {
+	return [...arr];
+};</code></pre>
+        <p>方案九 利用Array.of</p>
+        <pre><code>var cloneArray = function(arr) {
+	return Array.of(...arr);
+};</code></pre>
+        <p>方案十 利用Array.from</p>
+        <pre><code>var cloneArray = function(arr) {
+	return Array.from(arr);
+};</code></pre>
+        <p>以上列举了十种不同的方案，每个方案各有利弊，如果有不理解的api可以参看<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript" target="_blank">MDN</a>或者<a href="devdocs.io" target="_blank">DevDocs</a>， 相信你会有不一样的收获。</p>
+      </section>
+    </main>
+    <script type="text/javascript">
+      MX.load({
+      	js: 'lib/require',
+      	version: '160106',
+      	success: function() {
+      		requirejs(['jquery', 'hljs'], function($, hljs) {
+      			// 语法高亮
+      			hljs.configure({
+      				tabReplace: '    '
+      			});
+      			$('pre code').each(function() {
+      				hljs.highlightBlock(this);
+      			});
+      		});
+      	}
+      });
+    </script>
+  </body>
+</html>
