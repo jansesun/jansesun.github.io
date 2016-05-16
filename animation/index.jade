@@ -145,6 +145,10 @@ html(lang="zh-CN")
 					div.btn-container
 						button.btn.btn-primary.btn-xs.btn-animation 触发动画
 				p 和gif图相比而言，逐帧动画可以灵活的实现播放帧数，播放次数，播放频率的控制，可以做到收放自如。
+			#disqus_thread
+		footer
+			| Copyright©
+			a(href="http://github.com/jansesun", target="_blank") jansesun
 		script(type="text/javascript").
 			MX.load({
 				js: 'lib/require',
@@ -186,5 +190,9 @@ html(lang="zh-CN")
 					});
 				}
 			});
+			MX.load({
+				js: 'http://jansesun.disqus.com/embed.js'
+			});
+
 
 
