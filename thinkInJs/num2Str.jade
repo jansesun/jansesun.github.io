@@ -1,0 +1,85 @@
+mixin extraStyle(filename)
+	link(href=filename, rel="stylesheet", type="text/css")
+doctype html
+html(lang="zh-CN")
+	head
+		meta(charset="UTF-8")
+		title number格式化
+		+extraStyle('../css/bootstrap.min.css')
+		+extraStyle('../css/railscasts.css')
+		+extraStyle('../css/style.css')
+		link(rel="shortcut icon" href="../ico/favicon.ico")
+		script(type="text/javascript").
+			var basePath = '../';
+			(function(){MX=window.MX||{};var g=function(a,c){for(var b in c)a.setAttribute(b,c[b])};MX.load=function(a){var c=a.js,b=c?".js":".css",d=-1==location.search.indexOf("jsDebug"),e=a.js||a.css;-1==e.indexOf("http://")?(e=(a.path||window.basePath)+((c?"js/":"css/")+e)+(!d&&!c?".source":""),b=e+(a.version?"_"+a.version:"")+b):b=e;d||(d=b.split("#"),b=d[0],b=b+(-1!=b.indexOf("?")?"&":"?")+"r="+Math.random(),d[1]&&(b=b+"#"+d[1]));if(c){var c=b,h=a.success,f=document.createElement("script");f.onload=function(){h&&h();f=null};g(f,{type:"text/javascript",src:c,async:"true"});document.getElementsByTagName("head")[0].appendChild(f)}else{var c=b,i=a.success,a=document.createElement("link");g(a,{rel:"stylesheet"});document.getElementsByTagName("head")[0].appendChild(a);g(a,{href:c});i&&(a.onload=function(){i()})}}})();
+	body
+		nav.navbar.navbar-inverse.navbar-fixed-top
+			.navbar-inner
+				.container
+					em.logo
+					a.navbar-brand(href="http://jansesun.github.io/") Valley of Ghosts
+		main.container
+			header.title 思考题 number格式化
+			.post-date 16 May 2016
+			section
+				p
+					a(href="https://github.com/jansesun" target="_blank") jansesun
+					| 原创，转载请注明
+					a(href="http://jansesun.github.io/thinkInJs/num2Str.html") 出处
+				p 之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。
+				p 这个问题是在我在实际工作中遇到的，将后台返回的计数转化为符合英文阅读习惯的展现方式，比如将1234567表示为'1,234,567'，我当时觉得有简介的方法，但是又一时想不出来，就把这个问题丢到群里让大家讨论，最后大家给出了四种方案，当然在实际项目中，我采用了兼容性和书写优雅的最后一种，其他几种对开阔思路还是挺有好处的，希望对大家有所启示。
+				p 方案一 toLocaleString
+				p 这是javascript的Number对象的内置方法，如果没有讨厌的IE，本应该是极好的
+				pre
+					code.
+						function num2Str(num) {
+							// 兼容性问题，不可控IE下1234会变为'1,234.00'
+							return num.toLocaleString();
+						}
+				p 方案二 截取法
+				p 这是一种最朴素的思想，先从起始位置截断，让剩余字符串的长度为3的倍数，然后每隔3位，插入逗号分隔，然后再将截取的前缀和插入逗号的剩余字符串拼接。
+				pre
+					code.
+						function num2Str(num) {
+							var len, prefix, substr, index;
+							num += '';
+							len = num.length;
+							index = len % 3;
+							prefix = num.substr(0, index);
+							substr = num.substr(index);
+							return len > 3 ? (index === 0 ? '' : prefix + ',') + substr.replace(/(\d{3})(?=\d)/g, '$1,'): prefix;
+						}
+				p 方案三 补齐法
+				p 这是一种和方案二相反的思想，因为目标字符串只有数字和逗号为合法字符，所以考虑先用其他字符将字符串补齐到长度为3的倍数，然后每隔3位，插入逗号分隔，然后再将其他字符剔除即可。
+				pre
+					code.
+						function num2Str(num) {
+							var len;
+							num += '';
+							len = num.length;
+							index = len % 3;
+							return ('a'.repeat(index ? 3 - index : 0) + num).replace(/(\S{3})(?=\d)/g, '$1,').replace(/a/g, '');
+						};
+				p 方案四 正则正向前瞻（终极解决方案）
+				p 这种方法巧妙的利用了正则表达式的正向前瞻，这个思想可以扩展为任意等差数列位置插入指定字符，具体的做法就请读者自己试验了。
+				pre
+					code.
+						function num2Str(num) {
+							return num.replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
+						}
+		script(type="text/javascript").
+			MX.load({
+				js: 'lib/require',
+				version: '160106',
+				success: function() {
+					requirejs(['jquery', 'hljs'], function($, hljs) {
+						// 语法高亮
+						hljs.configure({
+							tabReplace: '    '
+						});
+						$('pre code').each(function() {
+							hljs.highlightBlock(this);
+						});
+					});
+				}
+			});
