@@ -4,7 +4,7 @@ doctype html
 html(lang="zh-CN")
 	head
 		meta(charset="UTF-8")
-		title 驼峰命名与连接命名互转
+		title 数组第一个元素容错处理
 		+extraStyle('../css/bootstrap.min.css')
 		+extraStyle('../css/railscasts.css')
 		+extraStyle('../css/style.css')
@@ -19,39 +19,50 @@ html(lang="zh-CN")
 					em.logo
 					a.navbar-brand(href="http://jansesun.github.io/") Valley of Ghosts
 		main.container
-			header.title 思考题 驼峰命名与连接命名互转
+			header.title 思考题 数组第一个元素容错处理
 			.post-date 16 May 2016
 			section
 				p
 					a(href="https://github.com/jansesun" target="_blank") jansesun
 					| 原创，转载请注明
-					a(href="http://jansesun.github.io/thinkInJs/camel2Minus.html") 出处
+					a(href="http://jansesun.github.io/thinkInJs/getFirstElement.html") 出处
 				p 之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。
-				p 这个问题主要应用在于兼容不支持dataSet的情况读取和设置data属性时的情况，也可以扩展思路实现对于后台返回的下划线连接的命名和驼峰命名的转化，这里展示驼峰命名和连接命名直接的项目转化，下划线的转化当然可以依葫芦画瓢。
 				pre
 					code.
-						var camel2Minus = function(str) {
-							return str.replace(/[A-Z]/g, '-$&').toLowerCase();
+						var arr = arr.length ? [arr[0]] : [];
+				p
+					| 上面这种代码大家肯定很熟悉，可能写过或者看到过，这种写法也不能说不优雅，但是是否有更好的或者别的思路呢？在之前的
+					a(href="http://jansesun.github.io/thinkInJs/cloneArray.html" target="_blank") 思考题 一维数组深复制
+					| 中大家肯定见过了数组丰富而强大的api了，想想是否有别的方式呢？
+				p 这个问题是我在review别人代码的时候想到的，觉得有些启发，所以整理出来。
+				p 方案一 利用数组的splice操作
+				pre
+					code.
+						var getFirstElement = function(arr) {
+							return arr.splice(0, 1);
 						};
-						var minus2Camel = function(str) {
-							return str.replace(/\-([a-z])/g, function(a, $1) {
-								return $1.toUpperCase();
+				p splice会破坏原数组，但也不失为一种解决方案，如果想函数式编程，那么请远离splice，拥抱下面的方案
+				p 方案二 利用数组的slice操作
+				pre
+					code.
+						var getFirstElement = function(arr) {
+							return arr.slice(0, 1);
+						};
+				p 以上方案只解决已知arr类型为数组。
+				p 只要平时多思考，灵活的利用api，你会爱上javascript，也许会爱上写javascript的你。
+				script(type="text/javascript").
+					MX.load({
+						js: 'lib/require',
+						version: '160106',
+						success: function() {
+							requirejs(['jquery', 'hljs'], function($, hljs) {
+								// 语法高亮
+								hljs.configure({
+									tabReplace: '    '
+								});
+								$('pre code').each(function() {
+									hljs.highlightBlock(this);
+								});
 							});
-						};
-				p 希望通过这两个函数的实现，可以对字符串替换的非普通字符串的参数有深入的了解，具体可以参看<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript" target="_blank">MDN</a>或者<a href="devdocs.io" target="_blank">DevDocs</a>中String.prototype.replace的文档。
-		script(type="text/javascript").
-			MX.load({
-				js: 'lib/require',
-				version: '160106',
-				success: function() {
-					requirejs(['jquery', 'hljs'], function($, hljs) {
-						// 语法高亮
-						hljs.configure({
-							tabReplace: '    '
-						});
-						$('pre code').each(function() {
-							hljs.highlightBlock(this);
-						});
+						}
 					});
-				}
-			});

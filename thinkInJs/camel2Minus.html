@@ -26,7 +26,7 @@
         <p>之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。</p>
         <p>这个问题主要应用在于兼容不支持dataSet的情况读取和设置data属性时的情况，也可以扩展思路实现对于后台返回的下划线连接的命名和驼峰命名的转化，这里展示驼峰命名和连接命名直接的项目转化，下划线的转化当然可以依葫芦画瓢。</p>
         <pre><code>var camel2Minus = function(str) {
-	return str.replace(/[A-Z]/g, '-$1').toLowerCase();
+	return str.replace(/[A-Z]/g, '-$&').toLowerCase();
 };
 var minus2Camel = function(str) {
 	return str.replace(/\-([a-z])/g, function(a, $1) {
