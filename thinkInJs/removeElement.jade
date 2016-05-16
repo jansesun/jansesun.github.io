@@ -45,19 +45,4 @@ html(lang="zh-CN")
 						};
 				p 该方案可以删除所有指定元素，但是会返回一个新的数组。
 				p 这两种方案各有利弊，大家根据实际情况酌情采用，当然如果可以使用Set那就easy了。
-		script(type="text/javascript").
-			MX.load({
-				js: 'lib/require',
-				version: '160106',
-				success: function() {
-					requirejs(['jquery', 'hljs'], function($, hljs) {
-						// 语法高亮
-						hljs.configure({
-							tabReplace: '    '
-						});
-						$('pre code').each(function() {
-							hljs.highlightBlock(this);
-						});
-					});
-				}
-			});
+		include ../jade/includes/article.footer.jade

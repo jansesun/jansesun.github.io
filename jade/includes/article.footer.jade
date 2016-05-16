@@ -1,0 +1,23 @@
+#disqus_thread
+script(type="text/javascript").
+	MX.load({
+		js: 'lib/require',
+		version: '160106',
+		success: function() {
+			requirejs(['jquery', 'hljs'], function($, hljs) {
+				// 语法高亮
+				hljs.configure({
+					tabReplace: '    '
+				});
+				$('pre code').each(function() {
+					hljs.highlightBlock(this);
+				});
+			});
+		}
+	});
+	MX.load({
+		js: 'http://jansesun.disqus.com/embed.js'
+	});
+footer
+	| Copyright©
+	a(href="http://github.com/jansesun", target="_blank") jansesun

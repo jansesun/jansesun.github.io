@@ -69,19 +69,4 @@ html(lang="zh-CN")
 							return '0'.repeat(maxLength - str.length) + str;
 						}
 				p 每次写这种主题的时候就想口诛笔伐万恶的浏览器厂商，什么时候才能一统天下，解放前端劳苦大众呢？
-				script(type="text/javascript").
-					MX.load({
-						js: 'lib/require',
-						version: '160106',
-						success: function() {
-							requirejs(['jquery', 'hljs'], function($, hljs) {
-								// 语法高亮
-								hljs.configure({
-									tabReplace: '    '
-								});
-								$('pre code').each(function() {
-									hljs.highlightBlock(this);
-								});
-							});
-						}
-					});
+		include ../jade/includes/article.footer.jade

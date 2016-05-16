@@ -71,19 +71,4 @@ html(lang="zh-CN")
 						function num2Str(num) {
 							return num.replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
 						}
-		script(type="text/javascript").
-			MX.load({
-				js: 'lib/require',
-				version: '160106',
-				success: function() {
-					requirejs(['jquery', 'hljs'], function($, hljs) {
-						// 语法高亮
-						hljs.configure({
-							tabReplace: '    '
-						});
-						$('pre code').each(function() {
-							hljs.highlightBlock(this);
-						});
-					});
-				}
-			});
+		include ../jade/includes/article.footer.jade
