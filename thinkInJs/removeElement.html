@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <title>删除数组中的指定元素</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/railscasts.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/style.css" rel="stylesheet" type="text/css"/>
+    <link rel="shortcut icon" href="../ico/favicon.ico">
+    <script type="text/javascript">
+      var basePath = '../';
+      (function(){MX=window.MX||{};var g=function(a,c){for(var b in c)a.setAttribute(b,c[b])};MX.load=function(a){var c=a.js,b=c?".js":".css",d=-1==location.search.indexOf("jsDebug"),e=a.js||a.css;-1==e.indexOf("http://")?(e=(a.path||window.basePath)+((c?"js/":"css/")+e)+(!d&&!c?".source":""),b=e+(a.version?"_"+a.version:"")+b):b=e;d||(d=b.split("#"),b=d[0],b=b+(-1!=b.indexOf("?")?"&":"?")+"r="+Math.random(),d[1]&&(b=b+"#"+d[1]));if(c){var c=b,h=a.success,f=document.createElement("script");f.onload=function(){h&&h();f=null};g(f,{type:"text/javascript",src:c,async:"true"});document.getElementsByTagName("head")[0].appendChild(f)}else{var c=b,i=a.success,a=document.createElement("link");g(a,{rel:"stylesheet"});document.getElementsByTagName("head")[0].appendChild(a);g(a,{href:c});i&&(a.onload=function(){i()})}}})();
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container"><em class="logo"></em><a href="http://jansesun.github.io/" class="navbar-brand">Valley of Ghosts</a></div>
+      </div>
+    </nav>
+    <main class="container">
+      <header class="title">思考题 删除数组中的指定元素</header>
+      <div class="post-date">16 May 2016</div>
+      <section>
+        <p><a href="https://github.com/jansesun" target="_blank">jansesun</a>原创，转载请注明<a href="http://jansesun.github.io/thinkInJs/removeElement.html">出处</a></p>
+        <p>之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。</p>
+        <p>在ES2015之前，js没有对应的Set，前端工程师为了实现类似的操作，只能把数组逼良为娼了，不过数组本身是有点不情愿的，所以没有提供直接删除指定元素的方法。既然要拉皮条，那就要服务到位。</p>
+        <p>方案一 利用splice配合indexOf删除指定元素</p>
+        <pre><code>var removeElement = function(arr, el) {
+	arr.splice(arr.indexOf(el), 1);
+};</code></pre>
+        <p>该方案可以在原数组上删除第一个指定元素。</p>
+        <p>方案二 利用filter删除指定元素</p>
+        <pre><code>var removeElement = function(arr, el) {
+	return arr.filter(function(val) {
+		return val !== el;
+	});
+};</code></pre>
+        <p>该方案可以删除所有指定元素，但是会返回一个新的数组。</p>
+        <p>这两种方案各有利弊，大家根据实际情况酌情采用，当然如果可以使用Set那就easy了。</p>
+      </section>
+    </main>
+    <script type="text/javascript">
+      MX.load({
+      	js: 'lib/require',
+      	version: '160106',
+      	success: function() {
+      		requirejs(['jquery', 'hljs'], function($, hljs) {
+      			// 语法高亮
+      			hljs.configure({
+      				tabReplace: '    '
+      			});
+      			$('pre code').each(function() {
+      				hljs.highlightBlock(this);
+      			});
+      		});
+      	}
+      });
+    </script>
+  </body>
+</html>
