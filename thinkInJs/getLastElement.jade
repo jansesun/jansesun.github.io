@@ -34,17 +34,17 @@ html(lang="zh-CN")
 						var getLastElement = function(arr) {
 							return arr[arr.length - 1];
 						};
-				p 方案二 利用数组pop操作
-				pre
-					code.
-						var getLastElement = function(arr) {
-							return arr.pop();
-						};
-				p 方案三 利用数组slice操作
+				p 方案二 利用数组slice操作
 				pre
 					code.
 						var getLastElement = function(arr) {
 							return arr.slice(-1)[0];
+						};
+				p 方案三 利用数组pop操作
+				pre
+					code.
+						var getLastElement = function(arr) {
+							return arr.pop();
 						};
 				p 方案四 利用数组splice操作
 				pre
@@ -66,7 +66,7 @@ html(lang="zh-CN")
 							arr.reverse();
 							return arr.shift();
 						};
-				p 除方案一之外均会修改原数组，reverse会增加O(n)的时间复杂度，shift会增加O(n)的时间复杂度，所以方案五、六仅用于拓展思维，不建议在实际中采用。 
+				p 除方案一和方案二之外均会修改原数组，reverse会增加O(n)的时间复杂度，shift会增加O(n)的时间复杂度，所以方案五、六仅用于拓展思维，不建议在实际中采用。 
 				script(type="text/javascript").
 					MX.load({
 						js: 'lib/require',
