@@ -1,40 +1,8 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8">
-    <title>重复字符串</title>
-    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-    <link href="../css/railscasts.css" rel="stylesheet" type="text/css"/>
-    <link href="../css/style.css" rel="stylesheet" type="text/css"/>
-    <link rel="shortcut icon" href="../ico/favicon.ico">
-    <script type="text/javascript">
-      var basePath = '../';
-      (function(){MX=window.MX||{};var g=function(a,c){for(var b in c)a.setAttribute(b,c[b])};MX.load=function(a){var c=a.js,b=c?".js":".css",d=-1==location.search.indexOf("jsDebug"),e=a.js||a.css;-1==e.indexOf("http://")?(e=(a.path||window.basePath)+((c?"js/":"css/")+e)+(!d&&!c?".source":""),b=e+(a.version?"_"+a.version:"")+b):b=e;d||(d=b.split("#"),b=d[0],b=b+(-1!=b.indexOf("?")?"&":"?")+"r="+Math.random(),d[1]&&(b=b+"#"+d[1]));if(c){var c=b,h=a.success,f=document.createElement("script");f.onload=function(){h&&h();f=null};g(f,{type:"text/javascript",src:c,async:"true"});document.getElementsByTagName("head")[0].appendChild(f)}else{var c=b,i=a.success,a=document.createElement("link");g(a,{rel:"stylesheet"});document.getElementsByTagName("head")[0].appendChild(a);g(a,{href:c});i&&(a.onload=function(){i()})}}})();
-    </script>
-  </head>
-  <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container"><em class="logo"></em><a href="http://jansesun.github.io/" class="navbar-brand">Valley of Ghosts</a></div>
-      </div>
-    </nav>
-    <main class="container">
-      <header class="title">思考题 重复字符串</header>
-      <div class="post-date">16 May 2016</div>
-      <section>
-        <p><a href="https://github.com/jansesun" target="_blank">jansesun</a>原创，转载请注明<a href="http://jansesun.github.io/thinkInJs/repeatString.html">出处</a></p>
-        <p>之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。</p>
-        <p>String.prototype.repeat是ES2015(ES6)新加的方法，对于要兼容各种浏览器的苦逼前端来说，想尝鲜就必须写polyfill，而且在没有这个方法之前我们也经常需要用到类似的方法来将某些数位补0等。</p>
-        <p>比较有意思的是，今天一月份找工作面试滴滴的时候，还被问到这个问题，第一次感觉到自己平时的积累有了用武之地。</p>
-        <p>重复字符串</p>
-        <pre><code>String.prototype.repeat = String.prototype.repeat || function(n) {
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>重复字符串</title><link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css"/><link href="../css/railscasts.css" rel="stylesheet" type="text/css"/><link href="../css/style.css" rel="stylesheet" type="text/css"/><link rel="shortcut icon" href="../ico/favicon.ico"><script type="text/javascript">var basePath = '../';
+(function(){MX=window.MX||{};var g=function(a,c){for(var b in c)a.setAttribute(b,c[b])};MX.load=function(a){var c=a.js,b=c?".js":".css",d=-1==location.search.indexOf("jsDebug"),e=a.js||a.css;-1==e.indexOf("http://")?(e=(a.path||window.basePath)+((c?"js/":"css/")+e)+(!d&&!c?".source":""),b=e+(a.version?"_"+a.version:"")+b):b=e;d||(d=b.split("#"),b=d[0],b=b+(-1!=b.indexOf("?")?"&":"?")+"r="+Math.random(),d[1]&&(b=b+"#"+d[1]));if(c){var c=b,h=a.success,f=document.createElement("script");f.onload=function(){h&&h();f=null};g(f,{type:"text/javascript",src:c,async:"true"});document.getElementsByTagName("head")[0].appendChild(f)}else{var c=b,i=a.success,a=document.createElement("link");g(a,{rel:"stylesheet"});document.getElementsByTagName("head")[0].appendChild(a);g(a,{href:c});i&&(a.onload=function(){i()})}}})();</script></head><body><nav class="navbar navbar-inverse navbar-fixed-top"><div class="navbar-inner"><div class="container"><em class="logo"></em><a href="http://jansesun.github.io/" class="navbar-brand">Valley of Ghosts</a></div></div></nav><main class="container"><header class="title">思考题 重复字符串</header><div class="post-date">16 May 2016</div><section><p><a href="https://github.com/jansesun" target="_blank">jansesun</a>原创，转载请注明<a href="http://jansesun.github.io/thinkInJs/repeatString.html">出处</a></p><p>之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。</p><p>String.prototype.repeat是ES2015(ES6)新加的方法，对于要兼容各种浏览器的苦逼前端来说，想尝鲜就必须写polyfill，而且在没有这个方法之前我们也经常需要用到类似的方法来将某些数位补0等。</p><p>比较有意思的是，今年一月份找工作面试滴滴的时候，还被问到这个问题，第一次感觉到自己平时的积累有了用武之地。</p><p>重复字符串</p><pre><code>String.prototype.repeat = String.prototype.repeat || function(n) {
 	return Array(n + 1).join(this);
-}</code></pre>
-        <p>
-          按位补齐
-          这个方案在ES2017中已经提上日程了，将来可以用<a href="http://www.2ality.com/2015/11/string-padding.html" target="_blank">String.prototype.padStart</a>补齐
-        </p>
-        <pre><code>String.prototype.padStart = String.prototype.padStart || function(maxLength, fillString = ' ') {
+}</code></pre><p>按位补齐
+这个方案在ES2017中已经提上日程了，将来可以用<a href="http://www.2ality.com/2015/11/string-padding.html" target="_blank">String.prototype.padStart</a>补齐</p><pre><code>String.prototype.padStart = String.prototype.padStart || function(maxLength, fillString = ' ') {
 	let str = '' + this;
 	if(str.length >= maxLength) {
 		return str;
@@ -43,44 +11,29 @@
 	let fillLen = maxLength - str.length;
 	let times2Repeat = Math.ceil(fillLen / fillString.length);
 	return fillString.repeat(times2Repeat).slice(0, fillLen) + str;
-}</code></pre>
-        <p>按位补零</p>
-        <p>按位补零当然可以用上面的padStart, 当然补0可以更加简单</p>
-        <pre><code>function addZero(str, maxLength) {
+}</code></pre><p>按位补零</p><p>按位补零当然可以用上面的padStart, 当然补0可以更加简单</p><pre><code>function addZero(str, maxLength) {
 	return ('' + str).padStart(maxLength, 0);
-}</code></pre>
-        <p>按位补零定制版</p>
-        <pre><code>function addZero(str, maxLength) {
+}</code></pre><p>按位补零定制版</p><pre><code>function addZero(str, maxLength) {
 	let str += '';
 	if(str.length >= maxLength) {
 		return str;
 	}
 	return '0'.repeat(maxLength - str.length) + str;
-}</code></pre>
-        <p>每次写这种主题的时候就想口诛笔伐万恶的浏览器厂商，什么时候才能一统天下，解放前端劳苦大众呢？</p>
-      </section>
-      <div id="disqus_thread"></div>
-    </main>
-    <footer style="text-align:center">Copyright©<a href="http://github.com/jansesun" target="_blank">jansesun</a></footer>
-    <script type="text/javascript">
-      MX.load({
-      	js: 'lib/require',
-      	version: '160106',
-      	success: function() {
-      		requirejs(['jquery', 'hljs'], function($, hljs) {
-      			// 语法高亮
-      			hljs.configure({
-      				tabReplace: '    '
-      			});
-      			$('pre code').each(function() {
-      				hljs.highlightBlock(this);
-      			});
-      		});
-      	}
-      });
-      MX.load({
-      	js: 'http://jansesun.disqus.com/embed.js'
-      });
-    </script>
-  </body>
-</html>
+}</code></pre><p>每次写这种主题的时候就想口诛笔伐万恶的浏览器厂商，什么时候才能一统天下，解放前端劳苦大众呢？</p></section><div id="disqus_thread"></div></main><footer style="text-align:center">Copyright©<a href="http://github.com/jansesun" target="_blank">jansesun</a></footer><script type="text/javascript">MX.load({
+	js: 'lib/require',
+	version: '160106',
+	success: function() {
+		requirejs(['jquery', 'hljs'], function($, hljs) {
+			// 语法高亮
+			hljs.configure({
+				tabReplace: '    '
+			});
+			$('pre code').each(function() {
+				hljs.highlightBlock(this);
+			});
+		});
+	}
+});
+MX.load({
+	js: 'http://jansesun.disqus.com/embed.js'
+});</script></body></html>
