@@ -1,198 +1,181 @@
-mixin extraStyle(filename)
-	link(href=filename, rel="stylesheet", type="text/css")
-doctype html
-html(lang="zh-CN")
-	head
-		meta(charset="UTF-8")
-		title 动画demo
-		+extraStyle('../css/bootstrap.min.css')
-		+extraStyle('../css/railscasts.css')
-		+extraStyle('../css/style.css')
-		link(rel="shortcut icon" href="../ico/favicon.ico")
-		script(type="text/javascript").
-			var basePath = '../';
-			(function(){MX=window.MX||{};var g=function(a,c){for(var b in c)a.setAttribute(b,c[b])};MX.load=function(a){var c=a.js,b=c?".js":".css",d=-1==location.search.indexOf("jsDebug"),e=a.js||a.css;-1==e.indexOf("http://")?(e=(a.path||window.basePath)+((c?"js/":"css/")+e)+(!d&&!c?".source":""),b=e+(a.version?"_"+a.version:"")+b):b=e;d||(d=b.split("#"),b=d[0],b=b+(-1!=b.indexOf("?")?"&":"?")+"r="+Math.random(),d[1]&&(b=b+"#"+d[1]));if(c){var c=b,h=a.success,f=document.createElement("script");f.onload=function(){h&&h();f=null};g(f,{type:"text/javascript",src:c,async:"true"});document.getElementsByTagName("head")[0].appendChild(f)}else{var c=b,i=a.success,a=document.createElement("link");g(a,{rel:"stylesheet"});document.getElementsByTagName("head")[0].appendChild(a);g(a,{href:c});i&&(a.onload=function(){i()})}}})();
-		style(type="text/css").
-			.animation-container {
-				position: relative;
-				width: 115px;
-				height: 120px;
-				background-color: #3c6;
-				border-radius: 4px;
+extends ../jade/includes/blog.jade
+block title
+	title 动画demo
+block inlineStyle
+	style(type="text/css").
+		.animation-container {
+			position: relative;
+			width: 115px;
+			height: 120px;
+			background-color: #3c6;
+			border-radius: 4px;
+		}
+		.rose {
+			position: absolute;
+			width: 15px;
+		}
+		.rose.active {
+			animation: moveX linear 1s infinite, moveY cubic-bezier(0, 0, .33, 0) 1s infinite;
+			will-change: left, top;
+		}
+		@keyframes moveX {
+			from {
+				left: 0;
 			}
-			.rose {
-				position: absolute;
-				width: 15px;
+			to {
+				left: 100px;
 			}
-			.rose.active {
-				animation: moveX linear 1s infinite, moveY cubic-bezier(0, 0, .33, 0) 1s infinite;
-				will-change: left, top;
+		}
+		@keyframes moveY {
+			from {
+				top: 0;
 			}
-			@keyframes moveX {
-				from {
-					left: 0;
+			to {
+				top: 100px;
+			}
+		}
+		.movie {
+			width: 288px;
+			height: 168px;
+			background-image: url(../images/movie.png);
+			background-repeat: no-repeat;
+		}
+		.movie.active {
+			animation: movie 1s steps(10, start) 3;
+		}
+		@keyframes movie {
+			from {
+				background-position: 0 0;
+			}
+			to {
+				background-position: 0 -1680px;
+			}
+		}
+		.btn-container {
+			margin: 10px 0;
+			width: 115px;
+			text-align: center;
+		}
+		#frame-container .btn-container {
+			width: 288px;
+		}
+block articleTitle
+	header.title 动画demo
+block postDate
+	.post-date 06 January 2016
+block content
+	section
+		p
+			a(href="https://github.com/jansesun" target="_blank") jansesun
+			| 原创，转载请注明
+			a(href="http://jansesun.github.io/animation/") 出处
+		p CSS3的animation属性为前端实现动画提供广阔的平台。不管是渐变动画还是逐帧动画都可以信手拈来。各种api的组合应用，可以打造炫酷的前端动画。
+		p 1.渐变动画
+		p CSS3的animation属性允许同时设置多个关键帧动画，结合贝塞尔曲线时间函数的灵活应用即可随心所欲的实现DOM元素按任意平面曲线运动。
+		p 接下来我会给出一个DOM按照平抛运动轨迹运行的demo
+		p 在实现demo前，我们先从数学原理分析
+		p 平抛运动轨迹的参数方程为x = t, y = t^2，而x = t的贝塞尔曲线为linear, y=t^2的贝塞尔曲线为cubic-bezier(0, 0, .33, 0)
+		p 有了参数方程对应的贝塞尔曲线，剩下的就是前端工程师擅长的css定义了。
+		pre
+			code.
+				.rose.active {
+					animation: moveX linear 1s infinite, moveY cubic-bezier(0, 0, .33, 0) 1s infinite;
+					will-change: top, left;
 				}
-				to {
-					left: 100px;
+				@keyframes moveX {
+					from {
+						left: 0;
+					}
+					to {
+						left: 100px;
+					}
 				}
-			}
-			@keyframes moveY {
-				from {
-					top: 0;
+				@keyframes moveY {
+					from {
+						top: 0;
+					}
+					to {
+						top: 100px;
+					}
 				}
-				to {
-					top: 100px;
+		div#demo-container
+			div.animation-container
+				img.rose(src="http://mat1.gtimg.com/www/newsapp/img/roselive/rose.png")
+			div.btn-container
+				button.btn.btn-primary.btn-xs.btn-animation 触发动画
+		p 2.逐帧动画
+		p CSS3的animation可以设置阶跃时间函数
+		p 结合css sprite技术，利用阶跃时间函数离散的改变容器的背景位置，即可轻松的实现逐帧动画。
+		p tips: 实现逐帧动画时，只需要设定起始和结束位置，然后设置帧数-1步长即可。
+		pre
+			code.
+				.movie {
+					width: 288px;
+					height: 168px;
+					background-image: url(../images/movie.png);
+					background-repeat: no-repeat;
 				}
-			}
-			.movie {
-				width: 288px;
-				height: 168px;
-				background-image: url(../images/movie.png);
-				background-repeat: no-repeat;
-			}
-			.movie.active {
-				animation: movie 1s steps(10, start) 3;
-			}
-			@keyframes movie {
-				from {
-					background-position: 0 0;
+				.movie.active {
+					animation: movie 1s steps(10, start) 3;
 				}
-				to {
-					background-position: 0 -1680px;
+				@keyframes movie {
+					from {
+						background-position: 0 0;
+					}
+					to {
+						background-position: 0 -1680px;
+					}
 				}
-			}
-			.btn-container {
-				margin: 10px 0;
-				width: 115px;
-				text-align: center;
-			}
-			#frame-container .btn-container {
-				width: 288px;
-			}
-	body
-		nav.navbar.navbar-inverse.navbar-fixed-top
-			.navbar-inner
-				.container
-					em.logo
-					a.navbar-brand(href="http://jansesun.github.io/") Valley of Ghosts
-		main.container
-			header.title 动画demo
-			.post-date 06 January 2016
-			section
-				p
-					a(href="https://github.com/jansesun" target="_blank") jansesun
-					| 原创，转载请注明
-					a(href="http://jansesun.github.io/animation/") 出处
-				p CSS3的animation属性为前端实现动画提供广阔的平台。不管是渐变动画还是逐帧动画都可以信手拈来。各种api的组合应用，可以打造炫酷的前端动画。
-				p 1.渐变动画
-				p CSS3的animation属性允许同时设置多个关键帧动画，结合贝塞尔曲线时间函数的灵活应用即可随心所欲的实现DOM元素按任意平面曲线运动。
-				p 接下来我会给出一个DOM按照平抛运动轨迹运行的demo
-				p 在实现demo前，我们先从数学原理分析
-				p 平抛运动轨迹的参数方程为x = t, y = t^2，而x = t的贝塞尔曲线为linear, y=t^2的贝塞尔曲线为cubic-bezier(0, 0, .33, 0)
-				p 有了参数方程对应的贝塞尔曲线，剩下的就是前端工程师擅长的css定义了。
-				pre
-					code.
-						.rose.active {
-							animation: moveX linear 1s infinite, moveY cubic-bezier(0, 0, .33, 0) 1s infinite;
-							will-change: top, left;
-						}
-						@keyframes moveX {
-							from {
-								left: 0;
-							}
-							to {
-								left: 100px;
-							}
-						}
-						@keyframes moveY {
-							from {
-								top: 0;
-							}
-							to {
-								top: 100px;
-							}
-						}
-				div#demo-container
-					div.animation-container
-						img.rose(src="http://mat1.gtimg.com/www/newsapp/img/roselive/rose.png")
-					div.btn-container
-						button.btn.btn-primary.btn-xs.btn-animation 触发动画
-				p 2.逐帧动画
-				p CSS3的animation可以设置阶跃时间函数
-				p 结合css sprite技术，利用阶跃时间函数离散的改变容器的背景位置，即可轻松的实现逐帧动画。
-				p tips: 实现逐帧动画时，只需要设定起始和结束位置，然后设置帧数-1步长即可。
-				pre
-					code.
-						.movie {
-							width: 288px;
-							height: 168px;
-							background-image: url(../images/movie.png);
-							background-repeat: no-repeat;
-						}
-						.movie.active {
-							animation: movie 1s steps(10, start) 3;
-						}
-						@keyframes movie {
-							from {
-								background-position: 0 0;
-							}
-							to {
-								background-position: 0 -1680px;
-							}
-						}
-				div#frame-container
-					div.movie
-					div.btn-container
-						button.btn.btn-primary.btn-xs.btn-animation 触发动画
-				p 和gif图相比而言，逐帧动画可以灵活的实现播放帧数，播放次数，播放频率的控制，可以做到收放自如。
-			#disqus_thread
-		footer
-			| Copyright©
-			a(href="http://github.com/jansesun", target="_blank") jansesun
-		script(type="text/javascript").
-			MX.load({
-				js: 'lib/require',
-				version: '160106',
-				success: function() {
-					requirejs(['jquery', 'hljs'], function($, hljs) {
-						var demoContainer = $('#demo-container'),
-							frameContainer = $('#frame-container');
-						// 语法高亮
-						hljs.configure({
-							tabReplace: '    '
-						});
-						$('pre code').each(function() {
-							hljs.highlightBlock(this);
-						});
-						// 动画演示
-						demoContainer.on('click', '.btn-animation', function(e) {
-							var el = $(this);
-							if(el.data('stop')) {
-								el.text('触发动画');
-								el.data('stop', 0);
-							} else {
-								el.text('暂停动画');
-								el.data('stop', 1);
-							}
-							demoContainer.find('.rose').toggleClass('active');
-						});
-						frameContainer.on('click', '.btn-animation', function(e) {
-							var el = $(this);
-							if(el.data('stop')) {
-								el.text('触发动画');
-								el.data('stop', 0);
-							} else {
-								el.text('暂停动画');
-								el.data('stop', 1);
-							}
-							frameContainer.find('.movie').toggleClass('active');
-						});
+		div#frame-container
+			div.movie
+			div.btn-container
+				button.btn.btn-primary.btn-xs.btn-animation 触发动画
+		p 和gif图相比而言，逐帧动画可以灵活的实现播放帧数，播放次数，播放频率的控制，可以做到收放自如。
+block inlineScript
+	script(type="text/javascript").
+		MX.load({
+			js: 'lib/require',
+			version: '160106',
+			success: function() {
+				requirejs(['jquery', 'hljs'], function($, hljs) {
+					var demoContainer = $('#demo-container'),
+						frameContainer = $('#frame-container');
+					// 语法高亮
+					hljs.configure({
+						tabReplace: '    '
 					});
-				}
-			});
-			MX.load({
-				js: 'http://jansesun.disqus.com/embed.js'
-			});
+					$('pre code').each(function() {
+						hljs.highlightBlock(this);
+					});
+					// 动画演示
+					demoContainer.on('click', '.btn-animation', function(e) {
+						var el = $(this);
+						if(el.data('stop')) {
+							el.text('触发动画');
+							el.data('stop', 0);
+						} else {
+							el.text('暂停动画');
+							el.data('stop', 1);
+						}
+						demoContainer.find('.rose').toggleClass('active');
+					});
+					frameContainer.on('click', '.btn-animation', function(e) {
+						var el = $(this);
+						if(el.data('stop')) {
+							el.text('触发动画');
+							el.data('stop', 0);
+						} else {
+							el.text('暂停动画');
+							el.data('stop', 1);
+						}
+						frameContainer.find('.movie').toggleClass('active');
+					});
+				});
+			}
+		});
+		MX.load({
+			js: 'http://jansesun.disqus.com/embed.js'
+		});
 
 
 
