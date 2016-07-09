@@ -16,9 +16,9 @@ main {
 	padding-bottom: 15px;
 	border-bottom: 1px solid #ccc;
 }
-section>p:first-child {
+section > p:first-child {
 	margin-top: 10px;
 }
-p {
+p, img {
 	margin-bottom: 10px;
 }
