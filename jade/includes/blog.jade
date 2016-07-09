@@ -1,0 +1,27 @@
+mixin extraStyle(filename)
+	link(href=filename, rel="stylesheet", type="text/css")
+doctype html
+html(lang="zh-CN")
+	head
+		meta(charset="UTF-8")
+		block title
+			title Default title
+		+extraStyle('../css/bootstrap.min.css')
+		+extraStyle('../css/railscasts.css')
+		+extraStyle('../css/style.css')
+		link(rel="shortcut icon" href="../ico/favicon.ico")
+		script(type="text/javascript").
+			var basePath = '../';
+			(function(){MX=window.MX||{};var g=function(a,c){for(var b in c)a.setAttribute(b,c[b])};MX.load=function(a){var c=a.js,b=c?".js":".css",d=-1==location.search.indexOf("jsDebug"),e=a.js||a.css;-1==e.indexOf("http://")?(e=(a.path||window.basePath)+((c?"js/":"css/")+e)+(!d&&!c?".source":""),b=e+(a.version?"_"+a.version:"")+b):b=e;d||(d=b.split("#"),b=d[0],b=b+(-1!=b.indexOf("?")?"&":"?")+"r="+Math.random(),d[1]&&(b=b+"#"+d[1]));if(c){var c=b,h=a.success,f=document.createElement("script");f.onload=function(){h&&h();f=null};g(f,{type:"text/javascript",src:c,async:"true"});document.getElementsByTagName("head")[0].appendChild(f)}else{var c=b,i=a.success,a=document.createElement("link");g(a,{rel:"stylesheet"});document.getElementsByTagName("head")[0].appendChild(a);g(a,{href:c});i&&(a.onload=function(){i()})}}})();
+	body
+		nav.navbar.navbar-inverse.navbar-fixed-top
+			.navbar-inner
+				.container
+					em.logo
+					a.navbar-brand(href="http://jansesun.github.io/") Valley of Ghosts
+		main.container
+			block articleTitle
+			block postDate
+			block content
+			#disqus_thread
+		include ./article.footer.jade
