@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <title>在数组的指定位置插入并打平数组</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/railscasts.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/style.css" rel="stylesheet" type="text/css"/>
+    <link rel="shortcut icon" href="../ico/favicon.ico">
+    <script type="text/javascript">
+      var basePath = '../';
+      (function(){MX=window.MX||{};var g=function(a,c){for(var b in c)a.setAttribute(b,c[b])};MX.load=function(a){var c=a.js,b=c?".js":".css",d=-1==location.search.indexOf("jsDebug"),e=a.js||a.css;-1==e.indexOf("http://")?(e=(a.path||window.basePath)+((c?"js/":"css/")+e)+(!d&&!c?".source":""),b=e+(a.version?"_"+a.version:"")+b):b=e;d||(d=b.split("#"),b=d[0],b=b+(-1!=b.indexOf("?")?"&":"?")+"r="+Math.random(),d[1]&&(b=b+"#"+d[1]));if(c){var c=b,h=a.success,f=document.createElement("script");f.onload=function(){h&&h();f=null};g(f,{type:"text/javascript",src:c,async:"true"});document.getElementsByTagName("head")[0].appendChild(f)}else{var c=b,i=a.success,a=document.createElement("link");g(a,{rel:"stylesheet"});document.getElementsByTagName("head")[0].appendChild(a);g(a,{href:c});i&&(a.onload=function(){i()})}}})();
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container"><em class="logo"></em><a href="http://jansesun.github.io/" class="navbar-brand">Valley of Ghosts</a></div>
+      </div>
+    </nav>
+    <main class="container">
+      <header class="title">思考题 在数组的指定位置插入并打平数组</header>
+      <div class="post-date">16 July 2016</div>
+      <section>
+        <p><a href="https://github.com/jansesun" target="_blank">jansesun</a>原创，转载请注明<a href="http://jansesun.github.io/thinkInJs/insertArray.html">出处</a></p>
+        <p>之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。</p>
+        <p>很久没有在群里出思考题了，前些天在工作中遇到一个问题，我将其抽象为一个思考题发布到群里。</p>
+        <p>将数组b在数组a的位置i后插入，并且打平。</p>
+        <p>对数组API熟悉的朋友，如果实现肯定不是难事，问题如何让我们的代码更加优雅呢？</p>
+        <p>我把题目发布到群里时，我心里已经有一个答案了，不过看到大家给出的答案还是让我茅塞顿开，醍醐灌顶。</p>
+        <p>基本思路是围绕打平参数调用splice，切分原数组然后进行数组拼接展开的。以下为大家逐一展示人民群众的伟大智慧。</p>
+        <p>方案一 通过函数的apply方法调用仅支持变长参数的splice方法</p>
+        <pre><code>var insertArray = function(target, i, source) {
+	target.splice.apply(target, [i, 0].concat(source));
+	return target;
+};</code></pre>
+        <p>方案二 通过slice方法切分元素组，在将三段数组通过concat进行拼接</p>
+        <pre><code>var insertArray = function(target, i, source) } {
+	return target.slice(0, i).concat(source, target.slice(i));
+};</code></pre>
+        <p>接下来的两个解答，要感谢伟大ES6提供了spread运算符。</p>
+        <p>方案三 通过spread运算符将数组展开调用slice方法</p>
+        <pre><code>var insertArray = function(target, i, source) {
+	target.splice(i, 0, ...source);
+	return target;
+};</code></pre>
+        <p>方案四 通过spread运算符结合slice方法生成数组字面量</p>
+        <pre><code>var insertArray = function(target, i, source) {
+	return [...target.slice(0, i), ...source, ...target.slice(i)];
+};</code></pre>
+        <p>方案三为方案一的ES6升级版，方案四为方案二的ES6升级版，我在工程实践中采用了字符数最少的方案三。</p>
+        <p>以上各个方案均出自群里的@南柯一梦，灵活多变的思路，对API的娴熟应用，都让我们受益匪浅，在此特别鸣谢。</p>
+      </section>
+      <div id="disqus_thread"></div>
+    </main>
+    <footer style="text-align:center">Copyright©<a href="http://github.com/jansesun" target="_blank">jansesun</a></footer>
+    <script type="text/javascript">
+      MX.load({
+      	js: 'lib/require',
+      	version: '160106',
+      	success: function() {
+      		requirejs(['jquery', 'hljs'], function($, hljs) {
+      			// 语法高亮
+      			hljs.configure({
+      				tabReplace: '    '
+      			});
+      			$('pre code').each(function() {
+      				hljs.highlightBlock(this);
+      			});
+      		});
+      	}
+      });
+      MX.load({
+      	js: 'http://jansesun.disqus.com/embed.js'
+      });
+    </script>
+  </body>
+</html>
