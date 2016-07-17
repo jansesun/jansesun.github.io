@@ -1,0 +1,126 @@
+extends ../jade/includes/blog.jade
+block title
+	title 斜线在布局中的那些事
+block inlineStyle
+	style(type="text/css").
+		.seperator {
+			width: 14px;
+			height: 29px;
+			background-color: black;
+		}
+		#grandient-background .seperator {
+			background-image: linear-gradient(to left top, transparent 49%, #fff 49%, #fff 51%, transparent 51%);
+		}
+		#svg-background .seperator {
+			background-image: url(slash.svg);
+			background-size: cover;
+		}
+		#pseudo-classes .seperator {
+			position: relative;
+		}
+		#pseudo-classes .seperator:before {
+			content: '';
+			position: absolute;
+			top: -1px;
+			left: 6px;
+			transform: rotate(25deg);
+			background-color: #fff;
+			width: 1px;
+			height: 32px;
+		}
+block articleTitle
+	header.title 斜线在布局中的那些事
+block postDate
+	.post-date 17 July 2016
+block content
+	section
+		p
+			a(href="https://github.com/jansesun" target="_blank") jansesun
+			| 原创，转载请注明
+			a(href="http://jansesun.github.io/layout/slash.html") 出处
+		p 在视觉设计中，有时会使用斜线作为分隔线。对于这种设计，前端有各种奇技淫巧来实现。不同的方案各有千秋，我会列举一些我想到的方案，和大家一起分享，来开阔下思路。
+		p 本文实例代码以实现14px*29px的1px的对角线为例
+		p 斜线的实现原理无外乎两种，直接绘制斜线或者将直线进行旋转。
+		p 原理一 直接绘制斜线
+		p 方案1.1 通过渐变背景来实现
+		#grandient-background
+			.seperator
+		pre
+			code.
+				#grandient-background .seperator {
+					background-image: linear-gradient(to left top, transparent 49%, #fff 49%, #fff 51%, transparent 51%);
+				}
+		p 该方案线宽不易控制，且容易出现虚线
+		p 方案1.2 通过svg绘制
+		#svg-background
+			.seperator
+		pre
+			code.
+				#svg-background .seperator {
+					background-image: url(slash.svg);
+					background-size: cover;
+				}
+		p 该方案采用svg，容器尺寸有极佳的适应性，且线宽容易控制
+		p 方案1.3 通过canvas绘制
+		#canvas-container
+			canvas.seperator(width="14" height="29")
+		pre
+			code.
+				var canvas = document.getElementById('canvas-container').firstElementChild;
+				var ctx = canvas.getContext('2d');
+				ctx.strokeStyle = '#fff';
+				ctx.lineWidth = 1;
+				ctx.beginPath();
+				ctx.moveTo(0, 29);
+				ctx.lineTo(14, 0);
+				ctx.stroke();
+		p 该方案采用canvas，线宽容易控制，通过脚本绘制会有些许延时
+		p 原理二 旋转直线
+		p 显然我们可以根据原理一绘制直线，然后再进行旋转，不过绘制直线有更简单的思路，border或者dom都可以简单的实现直线
+		p 方案2.1 通过旋转伪类绘制直线
+		#pseudo-classes
+			.seperator
+		pre
+			code.
+				#pseudo-classes .seperator {
+					position: relative;
+				}
+				#pseudo-classes .seperator:before {
+					content: '';
+					position: absolute;
+					top: -1px;
+					left: 6px;
+					transform: rotate(25deg); /* Math.atan(14/29) * 180 / 3.14 */
+					background-color: #fff;
+					width: 1px;
+					height: 32px; /*Math.sqrt(14 * 14 + 29 * 29)*/
+				}
+		p 绘制直线还有其他的方式，我在这里就不一一罗列了，这种方案需要一些计算，当然可以在sass或者less中封装成mixin，以备不时之需。
+		p 我觉得，当遇到一个问题时，我们可以通过不同的方法来解决，这样有利于对自己能力的提高。
+block inlineScript
+	script(type="text/javascript").
+		(function() {
+			var canvas = document.getElementById('canvas-container').firstElementChild;
+			var ctx = canvas.getContext('2d');
+			ctx.strokeStyle = '#fff';
+			ctx.lineWidth = 1;
+			ctx.beginPath();
+			ctx.moveTo(0, 29);
+			ctx.lineTo(14, 0);
+			ctx.stroke();
+		}());
+		MX.load({
+			js: 'lib/require',
+			version: '160106',
+			success: function() {
+				requirejs(['jquery', 'hljs'], function($, hljs) {
+					// 语法高亮
+					hljs.configure({
+						tabReplace: '    '
+					});
+					$('pre code').each(function() {
+						hljs.highlightBlock(this);
+					});
+				});
+			}
+		});
