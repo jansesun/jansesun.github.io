@@ -1,0 +1,83 @@
+extends base.jade
+block title
+	title class绑定语法的实现
+block articleTitle
+	header.title 思考题 class绑定语法的实现
+block postDate
+	.post-date 27 Aug 2016
+block vars
+	- var fileName = 'classBind';
+block article
+	p 目前各种MV*前端框架让人眼花缭乱，很多人大呼前端技术栈变化太快。其实不然，个人觉得这些前端技术栈其实万变不离其宗，可以一通百通，他山之石，可以攻玉。今天以class绑定语法为例，进行论述。
+	p 首先对主流的框架的class绑定进行下简单的对比。
+	p Angular1
+	pre
+		code.
+			&lt;div ng-class="{active: active, tab: true}"&gt;&lt;/div&gt;
+			&lt;div ng-class="['tab', {active: active}]"&gt;&lt;/div&gt;
+	p Angular2
+	pre
+		code.
+			&lt;div [ngClass]="{active: active, tab: true}"&gt;&lt;/div&gt;
+			&lt;div [ngClass]="['tab', {active: active}]"&gt;&lt;/div&gt;
+	p Vue.js
+	pre
+		code.
+			&lt;div v-bind:class="{active: active, tab: true}"&gt;&lt;/div&gt;
+			&lt;div v-bind:class="['tab', {active: active}]"&gt;&lt;/div&gt;
+			&lt;div :class="{active: active, tab: true}"&gt;&lt;/div&gt;
+			&lt;div :class="['tab', {active: active}]"&gt;&lt;/div&gt;
+	p React JSX
+	pre
+		code.
+			&lt;div className={'tab' + (active ? ' active' : '')}&gt;&lt;/div&gt;
+	p avalon
+	pre
+		code.
+			&lt;div :class="['tab', @active && 'active']"&gt;&lt;/div&gt;
+	p knockout
+	pre
+		code.
+			&lt;div data-bind="css: {active: active, tab: true}"&gt;&lt;/div&gt;
+	p 从上述对比中，我们可以看出 angular,Vue.js的语法更加简单灵活，支持数组，对象，以及数组和对象的混合，knockout仅支持对象，avalon的语法有点不便于理解，React JSX的语法需要自己拼接字符串。
+	p 个人目前在用react，每次拼接字符串这样太过低效，所以考虑封装一个支持数组，对象，以及数组和对象的混合的className生成函数。
+	p 在封装函数前，我们需要考虑好，各种边界条件。
+	p 1.数组为空或者对象的所有值均为false，应该返回空字符串。
+	p 2.只要数组中存在的一个字符串元素 则返回的className包含该元素.
+	p 3.对象中某个属性值为true，则返回的className包含该属性。
+	p 4.只有数组中某个对象元素的某个属性值为true，则返回的className包含该属性。
+	p 5.返回的className不应该有重复的class
+	pre
+		code.
+			let className = function(obj) {
+				let set = new Set();
+				if(!Array.isArray(obj)) {
+					obj = [obj];
+				}
+				obj.forEach(o => {
+					if(typeof o === 'string') {
+						set.add(o);
+					} else {
+						Object.keys(o).forEach(key => {
+							if(o[key]) {
+								set.add(key);
+							}
+						});
+					}
+				});
+				return Array.from(set.values()).join(' ');
+			};
+	p 如果限制输入仅为对象，那么这个函数就可以更加简单的实现了。
+	pre
+		code.
+			let className = function(obj) {
+				return Object.keys(obj).filter(key => obj[key]).join(' ');
+			};
+	p 将className和react jsx结合，就可以愉快的写react了。
+	pre
+		code.
+			&lt;div className={className(['tab', {active: active}])}&gt;&lt;/div&gt;
+			&lt;div className={className({active: active, tab: true}])}&gt;&lt;/div&gt;
+	p 多一些思考，少一些拿来主义，日积月累。渐渐得你会发现你已经超越了你原来的仰望。
+
+

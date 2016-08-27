@@ -1,32 +1,28 @@
-extends ../jade/includes/blog.jade
+extends base.jade
 block title
 	title 删除数组中的指定元素
 block articleTitle
 	header.title 思考题 删除数组中的指定元素
 block postDate
 	.post-date 16 May 2016
-block content
-	section
-		p
-			a(href="https://github.com/jansesun" target="_blank") jansesun
-			| 原创，转载请注明
-			a(href="http://jansesun.github.io/thinkInJs/removeElement.html") 出处
-		p 之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。
-		p 在ES2015之前，js没有对应的Set，前端工程师为了实现类似的操作，只能把数组逼良为娼了，不过数组本身是有点不情愿的，所以没有提供直接删除指定元素的方法。既然要拉皮条，那就要服务到位。
-		p 方案一 利用splice配合indexOf删除指定元素
-		pre
-			code.
-				var removeElement = function(arr, el) {
-					arr.splice(arr.indexOf(el), 1);
-				};
-		p 该方案可以在原数组上删除第一个指定元素。
-		p 方案二 利用filter删除指定元素
-		pre
-			code.
-				var removeElement = function(arr, el) {
-					return arr.filter(function(val) {
-						return val !== el;
-					});
-				};
-		p 该方案可以删除所有指定元素，但是会返回一个新的数组。
-		p 这两种方案各有利弊，大家根据实际情况酌情采用，当然如果可以使用Set那就easy了。
+block vars
+	- var fileName = 'removeElement';
+block article
+	p 在ES2015之前，js没有对应的Set，前端工程师为了实现类似的操作，只能把数组逼良为娼了，不过数组本身是有点不情愿的，所以没有提供直接删除指定元素的方法。既然要拉皮条，那就要服务到位。
+	p 方案一 利用splice配合indexOf删除指定元素
+	pre
+		code.
+			var removeElement = function(arr, el) {
+				arr.splice(arr.indexOf(el), 1);
+			};
+	p 该方案可以在原数组上删除第一个指定元素。
+	p 方案二 利用filter删除指定元素
+	pre
+		code.
+			var removeElement = function(arr, el) {
+				return arr.filter(function(val) {
+					return val !== el;
+				});
+			};
+	p 该方案可以删除所有指定元素，但是会返回一个新的数组。
+	p 这两种方案各有利弊，大家根据实际情况酌情采用，当然如果可以使用Set那就easy了。

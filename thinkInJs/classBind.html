@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <title>class绑定语法的实现</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/railscasts.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/style.css" rel="stylesheet" type="text/css"/>
+    <link rel="shortcut icon" href="../ico/favicon.ico">
+    <script type="text/javascript">
+      var basePath = '../';
+      (function(){MX=window.MX||{};var g=function(a,c){for(var b in c)a.setAttribute(b,c[b])};MX.load=function(a){var c=a.js,b=c?".js":".css",d=-1==location.search.indexOf("jsDebug"),e=a.js||a.css;-1==e.indexOf("http://")?(e=(a.path||window.basePath)+((c?"js/":"css/")+e)+(!d&&!c?".source":""),b=e+(a.version?"_"+a.version:"")+b):b=e;d||(d=b.split("#"),b=d[0],b=b+(-1!=b.indexOf("?")?"&":"?")+"r="+Math.random(),d[1]&&(b=b+"#"+d[1]));if(c){var c=b,h=a.success,f=document.createElement("script");f.onload=function(){h&&h();f=null};g(f,{type:"text/javascript",src:c,async:"true"});document.getElementsByTagName("head")[0].appendChild(f)}else{var c=b,i=a.success,a=document.createElement("link");g(a,{rel:"stylesheet"});document.getElementsByTagName("head")[0].appendChild(a);g(a,{href:c});i&&(a.onload=function(){i()})}}})();
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container"><em class="logo"></em><a href="http://jansesun.github.io/" class="navbar-brand">Valley of Ghosts</a></div>
+      </div>
+    </nav>
+    <main class="container">
+      <header class="title">思考题 class绑定语法的实现</header>
+      <div class="post-date">27 Aug 2016</div>
+      <section>
+        <p><a href="https://github.com/jansesun" target="_blank">jansesun</a>原创，转载请注明<a href="http://jansesun.github.io/thinkInJs/classBind.html">出处</a></p>
+        <p>之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。</p>
+        <p>目前各种MV*前端框架让人眼花缭乱，很多人大呼前端技术栈变化太快。其实不然，个人觉得这些前端技术栈其实万变不离其宗，可以一通百通，他山之石，可以攻玉。今天以class绑定语法为例，进行论述。</p>
+        <p>首先对主流的框架的class绑定进行下简单的对比。</p>
+        <p>Angular1</p>
+        <pre><code>&lt;div ng-class="{active: active, tab: true}"&gt;&lt;/div&gt;
+&lt;div ng-class="['tab', {active: active}]"&gt;&lt;/div&gt;</code></pre>
+        <p>Angular2</p>
+        <pre><code>&lt;div [ngClass]="{active: active, tab: true}"&gt;&lt;/div&gt;
+&lt;div [ngClass]="['tab', {active: active}]"&gt;&lt;/div&gt;</code></pre>
+        <p>Vue.js</p>
+        <pre><code>&lt;div v-bind:class="{active: active, tab: true}"&gt;&lt;/div&gt;
+&lt;div v-bind:class="['tab', {active: active}]"&gt;&lt;/div&gt;
+&lt;div :class="{active: active, tab: true}"&gt;&lt;/div&gt;
+&lt;div :class="['tab', {active: active}]"&gt;&lt;/div&gt;</code></pre>
+        <p>React JSX</p>
+        <pre><code>&lt;div className={'tab' + (active ? ' active' : '')}&gt;&lt;/div&gt;</code></pre>
+        <p>avalon</p>
+        <pre><code>&lt;div :class="['tab', @active && 'active']"&gt;&lt;/div&gt;</code></pre>
+        <p>knockout</p>
+        <pre><code>&lt;div data-bind="css: {active: active, tab: true}"&gt;&lt;/div&gt;</code></pre>
+        <p>从上述对比中，我们可以看出 angular,Vue.js的语法更加简单灵活，支持数组，对象，以及数组和对象的混合，knockout仅支持对象，avalon的语法有点不便于理解，React JSX的语法需要自己拼接字符串。</p>
+        <p>个人目前在用react，每次拼接字符串这样太过低效，所以考虑封装一个支持数组，对象，以及数组和对象的混合的className生成函数。</p>
+        <p>在封装函数前，我们需要考虑好，各种边界条件。</p>
+        <p>1.数组为空或者对象的所有值均为false，应该返回空字符串。</p>
+        <p>2.只要数组中存在的一个字符串元素 则返回的className包含该元素.</p>
+        <p>3.对象中某个属性值为true，则返回的className包含该属性。</p>
+        <p>4.只有数组中某个对象元素的某个属性值为true，则返回的className包含该属性。</p>
+        <p>5.返回的className不应该有重复的class</p>
+        <pre><code>let className = function(obj) {
+	let set = new Set();
+	if(!Array.isArray(obj)) {
+		obj = [obj];
+	}
+	obj.forEach(o => {
+		if(typeof o === 'string') {
+			set.add(o);
+		} else {
+			Object.keys(o).forEach(key => {
+				if(o[key]) {
+					set.add(key);
+				}
+			});
+		}
+	});
+	return Array.from(set.values()).join(' ');
+};</code></pre>
+        <p>如果限制输入仅为对象，那么这个函数就可以更加简单的实现了。</p>
+        <pre><code>let className = function(obj) {
+	return Object.keys(obj).filter(key => obj[key]).join(' ');
+};</code></pre>
+        <p>将className和react jsx结合，就可以愉快的写react了。</p>
+        <pre><code>&lt;div className={className(['tab', {active: active}])}&gt;&lt;/div&gt;
+&lt;div className={className({active: active, tab: true}])}&gt;&lt;/div&gt;</code></pre>
+        <p>多一些思考，少一些拿来主义，日积月累。渐渐得你会发现你已经超越了你原来的仰望。</p>
+      </section>
+      <div id="disqus_thread"></div>
+    </main>
+    <footer style="text-align:center">Copyright©<a href="http://github.com/jansesun" target="_blank">jansesun</a></footer>
+    <script type="text/javascript">
+      MX.load({
+      	js: 'lib/require',
+      	version: '160106',
+      	success: function() {
+      		requirejs(['jquery', 'hljs'], function($, hljs) {
+      			// 语法高亮
+      			hljs.configure({
+      				tabReplace: '    '
+      			});
+      			$('pre code').each(function() {
+      				hljs.highlightBlock(this);
+      			});
+      		});
+      	}
+      });
+      MX.load({
+      	js: 'http://jansesun.disqus.com/embed.js'
+      });
+    </script>
+  </body>
+</html>

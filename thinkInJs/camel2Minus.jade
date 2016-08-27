@@ -1,31 +1,27 @@
-extends ../jade/includes/blog.jade
+extends base.jade
 block title
 	title 驼峰命名与连接命名互转
 block articleTitle
 	header.title 思考题 驼峰命名与连接命名互转
 block postDate
 	.post-date 16 May 2016
-block content
-	section
-		p
-			a(href="https://github.com/jansesun" target="_blank") jansesun
-			| 原创，转载请注明
-			a(href="http://jansesun.github.io/thinkInJs/camel2Minus.html") 出处
-		p 之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。
-		p 这个问题主要应用在于兼容不支持dataSet的情况读取和设置data属性时的情况，也可以扩展思路实现对于后台返回的下划线连接的命名和驼峰命名的转化，这里展示驼峰命名和连接命名直接的项目转化，下划线的转化当然可以依葫芦画瓢。
-		pre
-			code.
-				var camel2Minus = function(str) {
-					return str.replace(/[A-Z]/g, '-$&').toLowerCase();
-				};
-				var minus2Camel = function(str) {
-					return str.replace(/\-([a-z])/g, function(a, $1) {
-						return $1.toUpperCase();
-					});
-				};
-		p
-			| 希望通过这两个函数的实现，可以对字符串替换的非普通字符串的参数有深入的了解，具体可以参看
-			a(href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript" target="_blank") MDN
-			| 或者
-			a(href="http://devdocs.io" target="_blank") DevDocs
-			| 中String.prototype.replace的文档。
+block vars
+	- var fileName = 'camel2Minus';
+block article
+	p 这个问题主要应用在于兼容不支持dataSet的情况读取和设置data属性时的情况，也可以扩展思路实现对于后台返回的下划线连接的命名和驼峰命名的转化，这里展示驼峰命名和连接命名直接的项目转化，下划线的转化当然可以依葫芦画瓢。
+	pre
+		code.
+			var camel2Minus = function(str) {
+				return str.replace(/[A-Z]/g, '-$&').toLowerCase();
+			};
+			var minus2Camel = function(str) {
+				return str.replace(/\-([a-z])/g, function(a, $1) {
+					return $1.toUpperCase();
+				});
+			};
+	p
+		| 希望通过这两个函数的实现，可以对字符串替换的非普通字符串的参数有深入的了解，具体可以参看
+		a(href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript" target="_blank") MDN
+		| 或者
+		a(href="http://devdocs.io" target="_blank") DevDocs
+		| 中String.prototype.replace的文档。

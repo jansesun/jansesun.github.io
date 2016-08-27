@@ -1,37 +1,33 @@
-extends ../jade/includes/blog.jade
+extends base.jade
 block title
 	title 数组第一个元素容错处理
 block articleTitle
 	header.title 思考题 数组第一个元素容错处理
 block postDate
 	.post-date 16 May 2016
-block content
-	section
-		p
-			a(href="https://github.com/jansesun" target="_blank") jansesun
-			| 原创，转载请注明
-			a(href="http://jansesun.github.io/thinkInJs/getFirstElement.html") 出处
-		p 之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。
-		pre
-			code.
-				var arr = arr.length ? [arr[0]] : [];
-		p
-			| 上面这种代码大家肯定很熟悉，可能写过或者看到过，这种写法也不能说不优雅，但是是否有更好的或者别的思路呢？在之前的
-			a(href="http://jansesun.github.io/thinkInJs/cloneArray.html" target="_blank") 思考题 一维数组深复制
-			| 中大家肯定见过了数组丰富而强大的api了，想想是否有别的方式呢？
-		p 这个问题是我在review别人代码的时候想到的，觉得有些启发，所以整理出来。
-		p 方案一 利用数组的splice操作
-		pre
-			code.
-				var getFirstElement = function(arr) {
-					return arr.splice(0, 1);
-				};
-		p splice会破坏原数组，但也不失为一种解决方案，如果想函数式编程，那么请远离splice，拥抱下面的方案
-		p 方案二 利用数组的slice操作
-		pre
-			code.
-				var getFirstElement = function(arr) {
-					return arr.slice(0, 1);
-				};
-		p 以上方案只解决已知arr类型为数组。
-		p 只要平时多思考，灵活的利用api，你会爱上javascript，也许会爱上写javascript的你。
+block vars
+	- var fileName = 'getFirstElement';
+block article
+	pre
+		code.
+			var arr = arr.length ? [arr[0]] : [];
+	p
+		| 上面这种代码大家肯定很熟悉，可能写过或者看到过，这种写法也不能说不优雅，但是是否有更好的或者别的思路呢？在之前的
+		a(href="http://jansesun.github.io/thinkInJs/cloneArray.html" target="_blank") 思考题 一维数组深复制
+		| 中大家肯定见过了数组丰富而强大的api了，想想是否有别的方式呢？
+	p 这个问题是我在review别人代码的时候想到的，觉得有些启发，所以整理出来。
+	p 方案一 利用数组的splice操作
+	pre
+		code.
+			var getFirstElement = function(arr) {
+				return arr.splice(0, 1);
+			};
+	p splice会破坏原数组，但也不失为一种解决方案，如果想函数式编程，那么请远离splice，拥抱下面的方案
+	p 方案二 利用数组的slice操作
+	pre
+		code.
+			var getFirstElement = function(arr) {
+				return arr.slice(0, 1);
+			};
+	p 以上方案只解决已知arr类型为数组。
+	p 只要平时多思考，灵活的利用api，你会爱上javascript，也许会爱上写javascript的你。
