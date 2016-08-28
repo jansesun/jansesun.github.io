@@ -73,6 +73,12 @@ block article
 			let className = function(obj) {
 				return Object.keys(obj).filter(key => obj[key]).join(' ');
 			};
+	p 上述方案可以用reduce实现，别有一番滋味。
+	pre
+		code.
+			let className = function(obj) {
+				return Object.keys(obj).reduce((next, key) => ((next && next + ' ') + (obj[key] ? key : '')), '');
+			};
 	p 将className和react jsx结合，就可以愉快的写react了。
 	pre
 		code.

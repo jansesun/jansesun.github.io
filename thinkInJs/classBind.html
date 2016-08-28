@@ -73,6 +73,10 @@
         <pre><code>let className = function(obj) {
 	return Object.keys(obj).filter(key => obj[key]).join(' ');
 };</code></pre>
+        <p>上述方案可以用reduce实现，别有一番滋味。</p>
+        <pre><code>let className = function(obj) {
+	return Object.keys(obj).reduce((next, key) => ((next && next + ' ') + (obj[key] ? key : '')), '');
+};</code></pre>
         <p>将className和react jsx结合，就可以愉快的写react了。</p>
         <pre><code>&lt;div className={className(['tab', {active: active}])}&gt;&lt;/div&gt;
 &lt;div className={className({active: active, tab: true}])}&gt;&lt;/div&gt;</code></pre>
