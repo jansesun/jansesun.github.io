@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <title>Cookie解析</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/railscasts.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/style.css" rel="stylesheet" type="text/css"/>
+    <link rel="shortcut icon" href="../ico/favicon.ico">
+    <script type="text/javascript">
+      var basePath = '../';
+      (function(){MX=window.MX||{};var g=function(a,c){for(var b in c)a.setAttribute(b,c[b])};MX.load=function(a){var c=a.js,b=c?".js":".css",d=-1==location.search.indexOf("jsDebug"),e=a.js||a.css;-1==e.indexOf("http://")?(e=(a.path||window.basePath)+((c?"js/":"css/")+e)+(!d&&!c?".source":""),b=e+(a.version?"_"+a.version:"")+b):b=e;d||(d=b.split("#"),b=d[0],b=b+(-1!=b.indexOf("?")?"&":"?")+"r="+Math.random(),d[1]&&(b=b+"#"+d[1]));if(c){var c=b,h=a.success,f=document.createElement("script");f.onload=function(){h&&h();f=null};g(f,{type:"text/javascript",src:c,async:"true"});document.getElementsByTagName("head")[0].appendChild(f)}else{var c=b,i=a.success,a=document.createElement("link");g(a,{rel:"stylesheet"});document.getElementsByTagName("head")[0].appendChild(a);g(a,{href:c});i&&(a.onload=function(){i()})}}})();
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container"><em class="logo"></em><a href="http://jansesun.github.io/" class="navbar-brand">Valley of Ghosts</a></div>
+      </div>
+    </nav>
+    <main class="container">
+      <header class="title">思考题 Cookie解析</header>
+      <div class="post-date">28 Aug 2016</div>
+      <section>
+        <p><a href="https://github.com/jansesun" target="_blank">jansesun</a>原创，转载请注明<a href="http://jansesun.github.io/thinkInJs/parseCookie.html">出处</a></p>
+        <p>之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。</p>
+        <p>平时工作中难免会cookie，hash，query等非常有规律的字符串。我们往往需要将其转化为对象以便于高效获得某个属性的值。</p>
+        <p>字符串解析必须祭出正则表达式这个大杀器了。正则表达式功能非常强大，如何能够写出正确高效简洁的正则表达式却并不那么简单。</p>
+        <p>今天以cookie解析为切入点，逐步写出高效正确的正则表达式。</p>
+        <p>写正则表达式之前需要仔细分析字符串规律，以及正则表达式的用途。</p>
+        <pre><code>var cookie = '_octo=GH1.1.1971569174.1427768710; _ga=GA1.2.1928632190.1426268706; tz=Asia%2FShanghai';</code></pre>
+        <p>从上面可以看出cookie是由'; '分隔的`${key}=${value}`的形式。</p>
+        <p>解析cookie我们需要得到指定key对应的value.</p>
+        <p>所以我们需要通过捕获分组把值解析出来。</p>
+        <p>第一版</p>
+        <pre><code>let cookie = function(name) {
+	return decodeURIComponent((new RegExp(`${name}=([^;]+)`).exec(document.cookie) || [])[1]);
+};</code></pre>
+        <p>这个方案在绝大多数情况下是可行的，然而并不正确，因为忽略了前面的分隔符，这样只要任意有name后缀的值都会被错误的解析出来，与期望不符。</p>
+        <p>第二版</p>
+        <pre><code>let cookie = function(name) {
+	return decodeURIComponent((new RegExp(`(^|; )${name}=([^;]+)`).exec(document.cookie) || [])[2]);
+};</code></pre>
+        <p>这个方案已经可以得出正确的答案了，但是多了一个没必要的捕获分组，影响了正则表达式的性能。</p>
+        <p>第三版</p>
+        <pre><code>let cookie = function(name) {
+	return decodeURIComponent((new RegExp(`(?:^|; )${name}=([^;]+)`).exec(document.cookie) || [])[1]);
+};</code></pre>
+        <p>这个方案采用了非捕获分组，相比第二版有性能上的提升，但是我们的努力是否到此就结束了呢？</p>
+        <p>第四版</p>
+        <pre><code>let cookie = function(name) {
+	return decodeURIComponent((new RegExp(`[\\^;]\\s*${name}=([^;]+)`).exec(document.cookie) || [])[1]);
+};</code></pre>
+        <p>通过括号表达式代替非捕获分组，感觉棒棒哒，不过还有个小技巧可以让正则表达式更加简短在^只有在括号表达是的第一个字符时，才会对字符集取反。所以我们可以把;和^换个位置就不需要转义了。</p>
+        <p>第五版</p>
+        <pre><code>let cookie = function(name) {
+	return decodeURIComponent((new RegExp(`[;^]\\s*${name}=([^;]+)`).exec(document.cookie) || [])[1]);
+};</code></pre>
+        <p>现在已经进步很多了，但这还不是人生巅峰。套用三国杀周泰不屈的台词，“还不够”。强大的正则表达式提供了单词边界这种神奇的零宽匹配\b.</p>
+        <p>终极版</p>
+        <pre><code>let cookie = function(name) {
+	return decodeURIComponent((new RegExp(`\\b${name}=([^;]+)`).exec(document.cookie) || [])[1]);
+};</code></pre>
+        <p>这样经过我们不懈的努力与执着的追求，终于实现了前面所说的正确高效简洁。</p>
+        <p>通过一次又一次的努力，我们可以学到非捕获分组(?:)，括号表达式[],单词边界匹配等知识点，以及^在括号表达式中的转义以及后置等小技巧。</p>
+        <p>后面的第四版和第五版以及终极版是我今天写这篇博客的时候才想到的，我项目中的代码还是介于第三版和第四版之间的方案，这说明我写这篇博客的时候，我已经超越了前段时间的自己。</p>
+        <p>很多时候网上的解决方案也不见得是最好的，在知识对等的前提下，经过自己的思考可以得出最佳结论，而网上的解决方案通常只能保证正确性，尽信书不如无书，就是这个道理。对待网上的解决方案，要有批判的精神，这样才能实现自我提升。</p>
+      </section>
+      <div id="disqus_thread"></div>
+    </main>
+    <footer style="text-align:center">Copyright©<a href="http://github.com/jansesun" target="_blank">jansesun</a></footer>
+    <script type="text/javascript">
+      MX.load({
+      	js: 'lib/require',
+      	version: '160106',
+      	success: function() {
+      		requirejs(['jquery', 'hljs'], function($, hljs) {
+      			// 语法高亮
+      			hljs.configure({
+      				tabReplace: '    '
+      			});
+      			$('pre code').each(function() {
+      				hljs.highlightBlock(this);
+      			});
+      		});
+      	}
+      });
+      MX.load({
+      	js: 'http://jansesun.disqus.com/embed.js'
+      });
+    </script>
+  </body>
+</html>
