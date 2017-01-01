@@ -1,0 +1,45 @@
+extends base.jade
+block title
+	title 字符串转化为单字符数组
+block articleTitle
+	header.title 思考题 字符串转化为单字符数组
+block postDate
+	.post-date 1 Jan 2017
+block vars
+	- var fileName = 'splitString';
+block article
+	p 前段时间在跟踪问题时从一份源代码中看到了这个问题的一个巧妙实现，所以作为思考题放在群里，来促进大家的技术交流。
+	p 大家也没让我失望，给出了各种巧妙的实现方式。
+	p 我在这里列举些简洁的实现方式，如果读者能够受到一些启示，我将不胜荣幸。
+	p 方案一 最基础的想法String.prototype.split
+	pre
+		code.
+			function splitString(str) {
+				return str.split('');
+			}
+	p 方案二 移花接木
+	pre
+		code.
+			function splitString(str) {
+				return Array.prototype.slice.call(str);
+			}
+	p 方案三 借鸡生蛋，利用Array.from(ES6)
+	pre
+		code.
+			function splitString(str) {
+				return Array.from(str);
+			}
+	p 方案四 大道至简, 利用数组展开运算符(ES6)
+	pre
+		code.
+			function splitString(str) {
+				return [...str];
+			}
+	p 方案五 剑走偏锋
+	pre
+		code.
+			function splitString(str) {
+				return str.match(/[\s\S]/g);
+			}
+	p 每个方案都是一种不一样的思路，希望可以抛砖引玉，给大家在平时的工作中一些启示。
+	p 今天是2017年的元旦，幽灵祝各位朋友新年快乐，希望大家可以一同进步。也希望自己能够坚持写博客，把平时实践中的一些经验沉淀下来与大家分享。
