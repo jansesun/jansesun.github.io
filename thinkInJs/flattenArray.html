@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <title>嵌套数组打平</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/railscasts.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/style.css" rel="stylesheet" type="text/css"/>
+    <link rel="shortcut icon" href="../ico/favicon.ico">
+    <script type="text/javascript">
+      var basePath = '../';
+      (function(){MX=window.MX||{};var g=function(a,c){for(var b in c)a.setAttribute(b,c[b])};MX.load=function(a){var c=a.js,b=c?".js":".css",d=-1==location.search.indexOf("jsDebug"),e=a.js||a.css;-1==e.indexOf("http://")?(e=(a.path||window.basePath)+((c?"js/":"css/")+e)+(!d&&!c?".source":""),b=e+(a.version?"_"+a.version:"")+b):b=e;d||(d=b.split("#"),b=d[0],b=b+(-1!=b.indexOf("?")?"&":"?")+"r="+Math.random(),d[1]&&(b=b+"#"+d[1]));if(c){var c=b,h=a.success,f=document.createElement("script");f.onload=function(){h&&h();f=null};g(f,{type:"text/javascript",src:c,async:"true"});document.getElementsByTagName("head")[0].appendChild(f)}else{var c=b,i=a.success,a=document.createElement("link");g(a,{rel:"stylesheet"});document.getElementsByTagName("head")[0].appendChild(a);g(a,{href:c});i&&(a.onload=function(){i()})}}})();
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container"><em class="logo"></em><a href="http://jansesun.github.io/" class="navbar-brand">Valley of Ghosts</a></div>
+      </div>
+    </nav>
+    <main class="container">
+      <header class="title">思考题 嵌套数组打平</header>
+      <div class="post-date">9 Mar 2017</div>
+      <section>
+        <p><a href="https://github.com/jansesun" target="_blank">jansesun</a>原创，转载请注明<a href="http://jansesun.github.io/thinkInJs/flattenArray.html">出处</a></p>
+        <p>之前在UESTC前端群里跟一些朋友分享了一些javascript的思考题，旨在促进群内技术讨论，共同进步。期间不乏思维的火花，一直想将这些宝贵的财富沉淀下来，以便日后翻阅。</p>
+        <p>这段时间有些懈怠了，很久没有更新博客，最近一个学弟在面试过程中遇到一个问题，将一个嵌套数组打平为一维数组。</p>
+        <p>嵌套数组示例为[1, 2, [5, 8, [4]], 3, 1]</p>
+        <p>常规思路是递归打平</p>
+        <pre><code>function flattenArray(arr) {
+	let result = [];
+	let _flattenArray = function(arr) {
+		let i, len;
+		for(i = 0, len = arr.length; i < len; ++i) {
+			if(Array.isArray(arr[i])) {
+				_flattenArray(arr[i]);
+			} else {
+				result.push(arr[i]);
+			}
+		}
+	};
+	_flattenArray(arr);
+	return result;
+}</code></pre>
+        <p>上面的写法中规中矩，没有问题。我是一个喜欢不走寻常路的怪咖，我苦思冥想javascript的缔造者有没有给我们提供一些不为人知的小路呢？</p>
+        <p>我发现Array.prototype.toString 我们示例数组会输出'1,2,5,8,4,3,1'</p>
+        <p>我经过进一步尝试发现以下几种方式都有异曲同工之妙。</p>
+        <pre><code>arr.toString();
+arr + '';
+String(arr);
+arr.join();</code></pre>
+        <p>究其本质，后面三种都是隐式调用了数组原型方法toString，所以只要能够让javascript隐式调用toString方法就可以得到一个与数组嵌套层次无关的字符串。</p>
+        <p>看到这个字符串，有朋友可能会立即想到String.prototype.split就可以大功告成。</p>
+        <p>...当接近终点时，请冷静下...</p>
+        <p>原始数组所有元素都是Number类型，split之后会变成字符串，和我们的预期有些差异。当然再map一遍将其逐一转化为Number是可以的。不过是否有更简洁的写法呢？</p>
+        <p>如果有'[1,2,5,8,4,3,1]'这样一个字符串，我们就可以直接通过JSON.parse直接获得元素为Number的一维数组了。</p>
+        <pre><code>function flattenArray(arr) {
+	return JSON.parse(`[${arr}]`);
+}</code></pre>
+        <p>这个简洁的答案足够酷炫，不过有一定的适用范围，仅适用所有元素均为Number类型的嵌套数组打平，对于普适情况还是常规的递归打平比较靠谱，面对一些比较特殊的情形，会有一些比较简洁的思路。</p>
+        <p>希望读者能够从本文受到一些启发，那我将不甚荣幸。</p>
+      </section>
+      <div id="disqus_thread"></div>
+    </main>
+    <footer style="text-align:center">Copyright©<a href="http://github.com/jansesun" target="_blank">jansesun</a></footer>
+    <script type="text/javascript">
+      MX.load({
+      	js: 'lib/require',
+      	version: '160106',
+      	success: function() {
+      		requirejs(['jquery', 'hljs'], function($, hljs) {
+      			// 语法高亮
+      			hljs.configure({
+      				tabReplace: '    '
+      			});
+      			$('pre code').each(function() {
+      				hljs.highlightBlock(this);
+      			});
+      		});
+      	}
+      });
+      MX.load({
+      	js: 'http://jansesun.disqus.com/embed.js'
+      });
+    </script>
+  </body>
+</html>

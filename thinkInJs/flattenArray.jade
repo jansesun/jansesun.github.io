@@ -1,0 +1,51 @@
+extends base.jade
+block title
+	title 嵌套数组打平
+block articleTitle
+	header.title 思考题 嵌套数组打平
+block postDate
+	.post-date 9 Mar 2017
+block vars
+	- var fileName = 'flattenArray';
+block article
+	p 这段时间有些懈怠了，很久没有更新博客，最近一个学弟在面试过程中遇到一个问题，将一个嵌套数组打平为一维数组。
+	p 嵌套数组示例为[1, 2, [5, 8, [4]], 3, 1]
+	p 常规思路是递归打平
+	pre
+		code.
+			function flattenArray(arr) {
+				let result = [];
+				let _flattenArray = function(arr) {
+					let i, len;
+					for(i = 0, len = arr.length; i < len; ++i) {
+						if(Array.isArray(arr[i])) {
+							_flattenArray(arr[i]);
+						} else {
+							result.push(arr[i]);
+						}
+					}
+				};
+				_flattenArray(arr);
+				return result;
+			}
+	p 上面的写法中规中矩，没有问题。我是一个喜欢不走寻常路的怪咖，我苦思冥想javascript的缔造者有没有给我们提供一些不为人知的小路呢？
+	p 我发现Array.prototype.toString 我们示例数组会输出'1,2,5,8,4,3,1'
+	p 我经过进一步尝试发现以下几种方式都有异曲同工之妙。
+	pre
+		code.
+			arr.toString();
+			arr + '';
+			String(arr);
+			arr.join();
+	p 究其本质，后面三种都是隐式调用了数组原型方法toString，所以只要能够让javascript隐式调用toString方法就可以得到一个与数组嵌套层次无关的字符串。
+	p 看到这个字符串，有朋友可能会立即想到String.prototype.split就可以大功告成。
+	p ...当接近终点时，请冷静下...
+	p 原始数组所有元素都是Number类型，split之后会变成字符串，和我们的预期有些差异。当然再map一遍将其逐一转化为Number是可以的。不过是否有更简洁的写法呢？
+	p 如果有'[1,2,5,8,4,3,1]'这样一个字符串，我们就可以直接通过JSON.parse直接获得元素为Number的一维数组了。
+	pre
+		code.
+			function flattenArray(arr) {
+				return JSON.parse(`[${arr}]`);
+			}
+	p 这个简洁的答案足够酷炫，不过有一定的适用范围，仅适用所有元素均为Number类型的嵌套数组打平，对于普适情况还是常规的递归打平比较靠谱，面对一些比较特殊的情形，会有一些比较简洁的思路。
+	p 希望读者能够从本文受到一些启发，那我将不甚荣幸。
