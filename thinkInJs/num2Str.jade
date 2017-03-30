@@ -41,7 +41,7 @@ block article
 				index = len % 3;
 				return ('a'.repeat(index ? 3 - index : 0) + num).replace(/(\S{3})(?=\d)/g, '$1,').replace(/a/g, '');
 			};
-	p 方案四 正则正向前瞻（终极解决方案）
+	p 方案四 正则正向前瞻
 	p
 		| 这个方案由群里的
 		a(href="https://github.com/shenwei235" target="_blank") 我怎能不变态
@@ -51,4 +51,12 @@ block article
 		code.
 			function num2Str(num) {
 				return num.replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
+			}
+	p 方案五 零宽断言(终极方案)
+	p 这个方案由我带的实习生提供
+	p 这种方法也是利用正则表达式的正向前瞻，和方案四思路基本一致，但更加简洁。
+	pre
+		code.
+			function num2Str(num) {
+				return num.replace(/(?=\B(?:\d{3})+$)/g, ',');
 			}
